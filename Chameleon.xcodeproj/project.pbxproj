@@ -15,6 +15,7 @@
 		ED8426381C9D364C0083A161 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED8426361C9D364C0083A161 /* LaunchScreen.storyboard */; };
 		ED8426431C9D364C0083A161 /* ChameleonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426421C9D364C0083A161 /* ChameleonTests.swift */; };
 		ED84264E1C9D364C0083A161 /* ChameleonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */; };
+		ED84266A1C9D63CC0083A161 /* Chameleon.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426691C9D63CC0083A161 /* Chameleon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		ED8426491C9D364C0083A161 /* ChameleonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChameleonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChameleonUITests.swift; sourceTree = "<group>"; };
 		ED84264F1C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED8426691C9D63CC0083A161 /* Chameleon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 		ED84261F1C9D364C0083A161 = {
 			isa = PBXGroup;
 			children = (
+				ED8426681C9D63CC0083A161 /* Sources */,
 				ED84262A1C9D364C0083A161 /* Chameleon */,
 				ED8426411C9D364C0083A161 /* ChameleonTests */,
 				ED84264C1C9D364C0083A161 /* ChameleonUITests */,
@@ -126,6 +129,14 @@
 				ED84264F1C9D364C0083A161 /* Info.plist */,
 			);
 			path = ChameleonUITests;
+			sourceTree = "<group>";
+		};
+		ED8426681C9D63CC0083A161 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				ED8426691C9D63CC0083A161 /* Chameleon.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +272,7 @@
 			files = (
 				ED8426301C9D364C0083A161 /* SecondViewController.swift in Sources */,
 				ED84262C1C9D364C0083A161 /* AppDelegate.swift in Sources */,
+				ED84266A1C9D63CC0083A161 /* Chameleon.swift in Sources */,
 				ED84262E1C9D364C0083A161 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -488,6 +500,7 @@
 				ED8426541C9D364C0083A161 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ED8426551C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonTests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +509,7 @@
 				ED8426571C9D364C0083A161 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ED8426581C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonUITests" */ = {
 			isa = XCConfigurationList;
@@ -504,6 +518,7 @@
 				ED84265A1C9D364C0083A161 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
