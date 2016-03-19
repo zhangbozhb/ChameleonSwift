@@ -209,7 +209,7 @@ public class ThemeService {
         for window in UIApplication.sharedApplication().windows {
             // update view
             window.ch_switchTheme()
-            // update view controller的主题
+            // update view controller
             window.rootViewController?.ch_switchTheme()
         }
         // enforce update view controller
