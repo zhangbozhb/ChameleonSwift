@@ -21,28 +21,17 @@ class SecondViewController: UIViewController {
     }
     
     override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
-        if let a = now as? NSNumber, b = pre as? NSNumber {
-            return a.integerValue == b.integerValue + 1
+        if let a = now as? String, b = pre as? String where a != b{
+            return false
         }
         return true
     }
     
     override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-        if let style = now as? NSNumber {
-            switch(style.integerValue - 1) {
-            case 0:
-                view.backgroundColor = UIColor.redColor()
-            case 1:
-                view.backgroundColor = UIColor.greenColor()
-            case 2:
-                view.backgroundColor = UIColor.blueColor()
-            case 3:
-                view.backgroundColor = UIColor.yellowColor()
-            default:
-                view.backgroundColor = UIColor.purpleColor()
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
+                self.view.backgroundColor = UIColor.colorWithHexString(color.rawValue)
             }
-        } else {
-            view.backgroundColor = UIColor.grayColor()
         }
     }
 

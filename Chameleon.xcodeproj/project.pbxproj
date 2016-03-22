@@ -16,6 +16,7 @@
 		ED8426431C9D364C0083A161 /* ChameleonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426421C9D364C0083A161 /* ChameleonTests.swift */; };
 		ED84264E1C9D364C0083A161 /* ChameleonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */; };
 		ED84266A1C9D63CC0083A161 /* Chameleon.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426691C9D63CC0083A161 /* Chameleon.swift */; };
+		EDBA43C01CA12E2B0016283E /* Datas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBA43BF1CA12E2B0016283E /* Datas.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChameleonUITests.swift; sourceTree = "<group>"; };
 		ED84264F1C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED8426691C9D63CC0083A161 /* Chameleon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chameleon.swift; sourceTree = "<group>"; };
+		EDBA43BF1CA12E2B0016283E /* Datas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datas.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				ED8426341C9D364C0083A161 /* Assets.xcassets */,
 				ED8426361C9D364C0083A161 /* LaunchScreen.storyboard */,
 				ED8426391C9D364C0083A161 /* Info.plist */,
+				EDBA43BF1CA12E2B0016283E /* Datas.swift */,
 			);
 			path = Chameleon;
 			sourceTree = "<group>";
@@ -272,6 +275,7 @@
 			files = (
 				ED8426301C9D364C0083A161 /* SecondViewController.swift in Sources */,
 				ED84262C1C9D364C0083A161 /* AppDelegate.swift in Sources */,
+				EDBA43C01CA12E2B0016283E /* Datas.swift in Sources */,
 				ED84266A1C9D63CC0083A161 /* Chameleon.swift in Sources */,
 				ED84262E1C9D364C0083A161 /* FirstViewController.swift in Sources */,
 			);

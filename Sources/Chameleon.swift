@@ -197,12 +197,12 @@ class WeakRef<T: AnyObject> {
     }
 }
 
-public class ThemeService {
+private class ThemeService {
     private var viewControllers = [WeakRef<UIViewController>]()
     
     static let instance = ThemeService()
     
-    public func switchTheme(data: AnyObject) {
+    func switchTheme(data: AnyObject) {
         // update data in manager
         ThemeSwitchDataMananger.instance.updateSwitchData(data)
         
@@ -234,6 +234,23 @@ public class ThemeService {
         viewControllers = valideViewControllers
     }
 }
+
+extension UIView {
+    
+}
+
+extension UIViewController {
+    func ch_registerViewController() {
+        ThemeService.instance.registerViewController(self)
+    }
+}
+
+extension UIApplication {
+    class func ch_switchTheme(data: AnyObject) {
+        ThemeService.instance.switchTheme(data)
+    }
+}
+
 
 
 public class ThemeServiceConfig {
@@ -269,8 +286,8 @@ public extension UIView {
         }
         
         dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(Selector("awakeFromNib"), swizzledSelector: Selector("ch_awakeFromNib"))
-            ch_exchangeInstanceMethod(Selector("didMoveToSuperview"), swizzledSelector: Selector("ch_didMoveToSuperview"))
+            ch_exchangeInstanceMethod(#selector(NSObject.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+            ch_exchangeInstanceMethod(#selector(UIView.didMoveToSuperview), swizzledSelector: #selector(UIView.ch_didMoveToSuperview))
         }
     }
 }
@@ -289,7 +306,7 @@ public extension UITableViewCell {
         }
         
         dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(Selector("prepareForReuse"), swizzledSelector: Selector("ch_prepareForReuse"))
+            ch_exchangeInstanceMethod(#selector(UITableViewCell.prepareForReuse), swizzledSelector: #selector(UITableViewCell.ch_prepareForReuse))
         }
     }
 }
@@ -308,7 +325,7 @@ public extension UICollectionReusableView {
         }
         
         dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(Selector("prepareForReuse"), swizzledSelector: Selector("ch_prepareForReuse"))
+            ch_exchangeInstanceMethod(#selector(UITableViewCell.prepareForReuse), swizzledSelector: #selector(UITableViewCell.ch_prepareForReuse))
         }
     }
 }

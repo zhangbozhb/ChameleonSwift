@@ -9,28 +9,76 @@
 import UIKit
 
 
+class CustomerView1:UILabel {
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
+                self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
+            }
+        }
+    }
+}
+
+class CustomerView2:UILabel {
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+    
+    
+    override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
+        if let a = now as? String, b = pre as? String where a != b {
+            return false
+        }
+        return true
+    }
+    
+    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
+                self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
+            }
+        }
+    }
+}
+
 class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-    @IBOutlet weak var label1: UILabel!
-    @IBOutlet weak var label2: UILabel!
-    @IBOutlet weak var label3: UILabel!
-    var datas:[String] = []
+    @IBOutlet weak var leftPick: UIPickerView!
+    @IBOutlet weak var rightPick: UIPickerView!
+    
+    @IBOutlet weak var systemLabel: UILabel!
+    @IBOutlet weak var customerView2: CustomerView2!
+    @IBOutlet weak var customerView1: CustomerView1!
+
+    var datas:[ColorName] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        datas = ["redColor", "greenColor", "yellowColor", "purpleColor"]
         
-
-        label1.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-            self.label1.text = "label1\(now)"
-        }
+        datas = [.Ambe, .SA, .AmericanRos, .Amethys, .AndroidGree, .AntiFlashWhit,
+                 .AntiqueBras, .AntiqueBronz, .AntiqueFuchsi, .AntiqueRub, .AntiqueWhit,
+                 .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
-        label2.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-            self.label2.text = "label2\(now)"
-        }
         
-        label3.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-            self.label3.text = "label3\(now)"
+        systemLabel.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+            let df = NSDateFormatter.init()
+            df.dateFormat = "mm:ss"
+            self.systemLabel.text = df.stringFromDate(NSDate.init())
+            
+            if let now = now, value = now as? String {
+                if let color = ColorName(rawValue: value) {
+                    self.systemLabel.textColor = UIColor.colorWithHexString(color.rawValue)
+                }
+            }
         }
     }
 
@@ -48,31 +96,17 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
     }
     
     func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return datas[row]
+        return datas[row].rawValue
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        ThemeService.instance.switchTheme(row)
-    }
-    
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-        if let style = now as? NSNumber {
-            switch(style.integerValue) {
-            case 0:
-                view.backgroundColor = UIColor.redColor()
-            case 1:
-                view.backgroundColor = UIColor.greenColor()
-            case 2:
-                view.backgroundColor = UIColor.blueColor()
-            case 3:
-                view.backgroundColor = UIColor.yellowColor()
-            default:
-                view.backgroundColor = UIColor.purpleColor()
-            }
+        if pickerView == self.leftPick {
+            customerView1.text = datas[row].rawValue
         } else {
-            view.backgroundColor = UIColor.grayColor()
+            customerView2.text = datas[row].rawValue
         }
+        
+        UIApplication.ch_switchTheme(datas[row].rawValue)
     }
-
 }
 
