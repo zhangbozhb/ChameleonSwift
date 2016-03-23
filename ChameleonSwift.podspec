@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/zhangbozhb/Chameleon.git", :tag => s.version }
+  s.source       = { :git => "https://github.com/zhangbozhb/ChameleonSwift.git", :tag => s.version }
 
   s.source_files  = "Sources/*.swift", "Sources/*.{h,m}"
   s.exclude_files = "Sources/Exclude"

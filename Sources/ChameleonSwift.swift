@@ -1,6 +1,6 @@
 //
-//  Chameleon.swift
-//  Chameleon
+//  ChameleonSwift.swift
+//  ChameleonSwift
 //
 //  Created by travel on 16/3/19.
 //  Copyright © 2016年 travel. All rights reserved.
