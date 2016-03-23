@@ -251,7 +251,7 @@ private class ThemeService {
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     /**
      force view controller enable switch theme/skin
      Note: you call method if parentViewController is nil, normally you ignore it
@@ -261,7 +261,7 @@ extension UIViewController {
     }
 }
 
-extension UIApplication {
+public extension UIApplication {
     /**
      switch app theme
      

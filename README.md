@@ -38,15 +38,15 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
 **2** Switch Theme
 * Switch whole application theme
     ```swift
-    UIApplication.ch_switchTheme(yourdata)
+        UIApplication.ch_switchTheme(yourdata)
     ```
 * Switch specified view's theme
     ```swift
-    viewInstance.ch_switchTheme(yourdata)
+        viewInstance.ch_switchTheme(yourdata)
     ```
 * Switch specified view controller's theme
     ```swift
-    viewControllerInstance.ch_switchTheme(yourdata)
+        viewControllerInstance.ch_switchTheme(yourdata)
     ```
 
 ### Advance usage
