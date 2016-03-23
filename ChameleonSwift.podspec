@@ -4,7 +4,7 @@
 #
 #  To learn more about Podspec attributes see http://docs.cocoapods.org/specification.html
 #  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
-#
+#  pod trunk push ChameleonSwift.podspec
 
 Pod::Spec.new do |s|
 
@@ -16,11 +16,11 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ChameleonSwift"
-  s.version      = "0.0.1"
-  s.summary      = "A lightweight and pure Swift(2.1) implemented library for change app theme/skin"
+  s.version      = "0.0.2"
+  s.summary      = "A lightweight and pure Swift implemented library for change app theme/skin"
 
   s.description  = <<-DESC
-                   A lightweight and pure Swift(2.1) implemented library for switch app theme/skin
+                   A lightweight and pure Swift implemented library for switch app theme/skin
                    * Chameleon aim at provide easy way to enable to app switch theme
                    DESC
 

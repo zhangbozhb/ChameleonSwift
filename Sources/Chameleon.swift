@@ -40,18 +40,6 @@ private class ThemeSwitchData {
     }
 }
 
-private class ThemeSwitchDataMananger {
-    private(set) var switchData:ThemeSwitchData?
-    
-    static let instance = ThemeSwitchDataMananger()
-    
-    func updateSwitchData(data:AnyObject?, signature:String? = nil) -> ThemeSwitchData {
-        switchData = ThemeSwitchData.init(data: data, signature:signature)
-        return switchData!
-    }
-}
-
-
 private var kThemeLastSwitchKey: Void?
 private var kThemeSwitchBlockKey: Void?
 public typealias SwitchThemeBlock = ((now:AnyObject?, pre:AnyObject?) -> Void)
@@ -84,38 +72,51 @@ public extension UIView {
         }
     }
     
-    private var ch_dataMananger:ThemeSwitchDataMananger {
-        return ThemeSwitchDataMananger.instance
-    }
-    
-    private func ch_switchTheme() {
-        let now = ch_dataMananger.switchData
-        let pre = ch_themeSwitchData
-        guard ch_shouldSwitchTheme(now?.extData, pre: pre?.extData) else {
+    private func ch_switchThemeWrapper(data:ThemeSwitchData?) {
+        let preData = ch_themeSwitchData
+        guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
             return
         }
-        guard ThemeSwitchData.shouldUpdate(pre, lat: now) else {
+        guard ch_shouldSwitchTheme(data?.extData, pre: preData?.extData) else {
             return
         }
+        // save switch data
+        ch_themeSwitchData = data
         
-        ch_switchTheme(now?.extData, pre: pre?.extData)
-        ch_themeSwitchData = now
+        // call switch theme method
+        ch_switchTheme(data?.extData, pre: preData?.extData)
+        
+        // call switch theme block
+        ch_switchThemeBlock?(now:data?.extData, pre:preData?.extData)
     }
     
+    /**
+     Specifies whether the view should change theme.
+     true if the status bar should be hidden or false if it should be shown
+     
+     - parameter now: the data you switch theme
+     - parameter pre: the old data you switch theme
+     
+     - returns: true switch theme will happen, or false ignore switch theme
+     */
     public func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
         return true
     }
     
     public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
-        guard ch_shouldSwitchTheme(now, pre: pre) else {
-            return
-        }
         // switch sub views
-        for view in subviews {
-            view.ch_switchTheme()
+        for sub in subviews {
+            sub.ch_switchThemeWrapper(ch_themeSwitchData)
         }
-        // call switch theme block
-        ch_switchThemeBlock?(now:now, pre:pre)
+    }
+    
+    /**
+     switch self and subviews theme
+     
+     - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
+     */
+    public func ch_switchTheme(data:AnyObject?) {
+        ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
 }
 
@@ -129,6 +130,8 @@ public extension UIViewController {
         }
     }
     
+    /// when theme switch happend, this block will run, default is nil
+    /// Note: this block will run after ch_switchTheme(_:pre:) method
     var ch_switchThemeBlock:SwitchThemeBlock? {
         get {
             if let data =  objc_getAssociatedObject(self, &kThemeSwitchBlockKey) as? ObjectWrapper<SwitchThemeBlock> {
@@ -140,37 +143,52 @@ public extension UIViewController {
             objc_setAssociatedObject(self, &kThemeSwitchBlockKey, ObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
-    private var ch_dataMananger:ThemeSwitchDataMananger {
-        return ThemeSwitchDataMananger.instance
-    }
-    
-    private func ch_switchTheme() {
-        let now = ch_dataMananger.switchData
-        let pre = ch_themeSwitchData
-        guard ch_shouldSwitchTheme(now?.extData, pre: pre?.extData) else {
+
+    private func ch_switchThemeWrapper(data:ThemeSwitchData?) {
+        let preData = ch_themeSwitchData
+        guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
             return
         }
-        guard ThemeSwitchData.shouldUpdate(pre, lat: now) else {
+        guard ch_shouldSwitchTheme(data?.extData, pre: preData?.extData) else {
             return
         }
+        // save switch data
+        ch_themeSwitchData = data
         
-        ch_switchTheme(now?.extData, pre: pre?.extData)
-        ch_themeSwitchData = now
+        // call switch theme method
+        ch_switchTheme(data?.extData, pre: preData?.extData)
+        
+        // call switch theme block
+        ch_switchThemeBlock?(now:data?.extData, pre:preData?.extData)
     }
     
+    /**
+     Specifies whether the view controller should change theme.
+     true if the status bar should be hidden or false if it should be shown
+     
+     - parameter now: the data you switch theme
+     - parameter pre: the old data you switch theme
+     
+     - returns: true switch theme will happen, or false ignore switch theme
+     */
     public func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
         return true
     }
     
     public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
-        
-        // switch sub viewcontroerl
+        // switch sub view controller
         for viewController in childViewControllers {
-            viewController.ch_switchTheme()
+            viewController.ch_switchThemeWrapper(ch_themeSwitchData)
         }
-        // call switch theme block
-        ch_switchThemeBlock?(now:now, pre:pre)
+    }
+    
+    /**
+     switch self and childViewControllers's theme
+     
+     - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
+     */
+    public func ch_switchTheme(data:AnyObject?) {
+        ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
 }
 
@@ -202,20 +220,18 @@ private class ThemeService {
     
     static let instance = ThemeService()
     
-    func switchTheme(data: AnyObject) {
-        // update data in manager
-        ThemeSwitchDataMananger.instance.updateSwitchData(data)
-        
+    func switchTheme(data: AnyObject?) {
+        let switchData = ThemeSwitchData.init(data: data)
         for window in UIApplication.sharedApplication().windows {
             // update view
-            window.ch_switchTheme()
+            window.ch_switchThemeWrapper(switchData)
             // update view controller
-            window.rootViewController?.ch_switchTheme()
+            window.rootViewController?.ch_switchThemeWrapper(switchData)
         }
         // enforce update view controller
         for weakRef in viewControllers {
-            if let viewController = weakRef.value {
-                viewController.ch_switchTheme()
+            if let viewController = weakRef.value where nil == viewController.parentViewController {
+                viewController.ch_switchThemeWrapper(switchData)
             }
         }
     }
@@ -235,29 +251,43 @@ private class ThemeService {
     }
 }
 
-extension UIView {
-    
-}
-
 extension UIViewController {
+    /**
+     force view controller enable switch theme/skin
+     Note: you call method if parentViewController is nil, normally you ignore it
+     */
     func ch_registerViewController() {
         ThemeService.instance.registerViewController(self)
     }
 }
 
 extension UIApplication {
-    class func ch_switchTheme(data: AnyObject) {
+    /**
+     switch app theme
+     
+     - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
+     */
+    func ch_switchTheme(data: AnyObject?) {
+        ThemeService.instance.switchTheme(data)
+    }
+    /**
+     switch app theme
+     
+     - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
+     */
+    class func ch_switchTheme(data: AnyObject?) {
         ThemeService.instance.switchTheme(data)
     }
 }
 
-
-
 public class ThemeServiceConfig {
-    var autoSwitchThemeAfterAwakeFromNib = true
-    var autoSwitchThemeAfterMovedToSuperView = true
-    var autoSwitchThemeWhenTableViewCellReused = true
-    var autoSwitchThemeWhenCollectionViewCellReused = true
+    // view config
+    var viewAutoSwitchThemeAfterAwakeFromNib = false
+    var viewAutoSwitchThemeAfterMovedToSuperView = false
+    var viewAutoSwitchThemeWhenTableViewCellReused = false
+    var viewAutoSwitchThemeWhenCollectionViewCellReused = false
+    // view controller config
+    var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
     
     static let instance = ThemeServiceConfig()
 }
@@ -266,17 +296,18 @@ public extension UIView {
     private var ch_themeServiceConfig:ThemeServiceConfig {
         return ThemeServiceConfig.instance
     }
+    
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.autoSwitchThemeAfterAwakeFromNib {
-            ch_switchTheme()
+        if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
+            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
         }
     }
     
     func ch_didMoveToSuperview() {
         ch_didMoveToSuperview()
-        if ch_themeServiceConfig.autoSwitchThemeAfterMovedToSuperView {
-            ch_switchTheme()
+        if ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToSuperView {
+            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
         }
     }
     
@@ -295,8 +326,8 @@ public extension UIView {
 public extension UITableViewCell {
     func ch_prepareForReuse() {
         ch_prepareForReuse()
-        if ch_themeServiceConfig.autoSwitchThemeWhenTableViewCellReused {
-            ch_switchTheme()
+        if ch_themeServiceConfig.viewAutoSwitchThemeWhenTableViewCellReused {
+            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
         }
     }
     
@@ -314,8 +345,8 @@ public extension UITableViewCell {
 public extension UICollectionReusableView {
     func ch_prepareForReuse() {
         ch_prepareForReuse()
-        if ch_themeServiceConfig.autoSwitchThemeWhenCollectionViewCellReused {
-            ch_switchTheme()
+        if ch_themeServiceConfig.viewAutoSwitchThemeWhenCollectionViewCellReused {
+            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
         }
     }
     
@@ -331,10 +362,26 @@ public extension UICollectionReusableView {
 }
 
 public extension UIViewController {
-    func ch_registerThemeService() {
-        ThemeService.instance.registerViewController(self)
+    private var ch_themeServiceConfig:ThemeServiceConfig {
+        return ThemeServiceConfig.instance
+    }
+    
+    func ch_awakeFromNib() {
+        ch_awakeFromNib()
+        if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
+            ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
+        }
+    }
+    
+    override class func initialize() {
+        struct Static {
+            static var token: dispatch_once_t = 0
+        }
+        
+        dispatch_once(&Static.token) {
+            ch_exchangeInstanceMethod(#selector(NSObject.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+            ch_exchangeInstanceMethod(#selector(UIView.didMoveToSuperview), swizzledSelector: #selector(UIView.ch_didMoveToSuperview))
+        }
     }
 }
-
-
 
