@@ -2,7 +2,7 @@
 # ChameleonSwift
 
 
-A lightweight and pure Swift(2.1) implemented library for switch app theme/skin. Chameleon aim at provide easy way to enable to app switch theme
+A lightweight and pure Swift implemented library for switch app theme/skin. Chameleon aim at provide easy way to enable to app switch theme
 
 ## Requirements
 
@@ -56,13 +56,14 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
     Several properties are pre defined for you. When specified property is true, ch_ch_switchTheme(_:) user it's parent data
 
     ```swift
-        // view config
-        var viewAutoSwitchThemeAfterAwakeFromNib = false
-        var viewAutoSwitchThemeAfterMovedToSuperView = false
-        var viewAutoSwitchThemeWhenTableViewCellReused = false
-        var viewAutoSwitchThemeWhenCollectionViewCellReused = false
-        // view controller config
-        var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
+        // 配置主题修改
+        let tsc = ThemeServiceConfig.instance
+        tsc.viewAutoSwitchThemeAfterAwakeFromNib = true
+        tsc.viewAutoSwitchThemeAfterMovedToSuperView = true
+        tsc.viewAutoSwitchThemeWhenTableViewCellReused = true
+        tsc.viewAutoSwitchThemeWhenCollectionViewCellReused = true
+        tsc.viewControllerAutoSwitchThemeAfterAwakeFromNib = false
+        tsc.viewControllerAutoSwitchThemeWhenViewWillAppear = true
     ```
     **Note**: Be wared you should promise you method ch_switchTheme(_:pre:) and ch_switchThemeBlock run without exceptions. If unfortunately it happend, you app will crash.
 
@@ -97,7 +98,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'ChameleonSwift', '~> 0.0.2'
+pod 'ChameleonSwift'
 ```
 
 Then, run the following command:

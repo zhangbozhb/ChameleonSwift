@@ -31,7 +31,7 @@ private class ThemeSwitchData {
     }
     
     class func shouldUpdate(pre:ThemeSwitchData?, lat:ThemeSwitchData?) -> Bool {
-        if pre === lat {
+        if let pre = pre, lat = lat where pre === lat {
             return false
         } else if let a = pre?.lastSignature, b = lat?.lastSignature where a == b {
             return false
@@ -118,6 +118,13 @@ public extension UIView {
     public func ch_switchTheme(data:AnyObject?) {
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
+    
+    /**
+     switch self and subviews theme, the data user it's superview data, act like ch_switchTheme(_:), but more efficient
+     */
+    public func ch_switchTheme() {
+        ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+    }
 }
 
 public extension UIViewController {
@@ -189,6 +196,13 @@ public extension UIViewController {
      */
     public func ch_switchTheme(data:AnyObject?) {
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
+    }
+    
+    /**
+     switch self and childViewControllers's theme, the data user it's parentViewController's data, act like ch_switchTheme(_:), but more efficient
+     */
+    public func ch_switchTheme() {
+        ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
     }
 }
 
@@ -267,7 +281,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    func ch_switchTheme(data: AnyObject?) {
+    func ch_switchTheme(data: AnyObject? = nil) {
         ThemeService.instance.switchTheme(data)
     }
     /**
@@ -275,21 +289,22 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    class func ch_switchTheme(data: AnyObject?) {
+    class func ch_switchTheme(data: AnyObject? = nil) {
         ThemeService.instance.switchTheme(data)
     }
 }
 
 public class ThemeServiceConfig {
     // view config
-    var viewAutoSwitchThemeAfterAwakeFromNib = false
-    var viewAutoSwitchThemeAfterMovedToSuperView = false
-    var viewAutoSwitchThemeWhenTableViewCellReused = false
-    var viewAutoSwitchThemeWhenCollectionViewCellReused = false
+    public var viewAutoSwitchThemeAfterAwakeFromNib = false
+    public var viewAutoSwitchThemeAfterMovedToSuperView = false
+    public var viewAutoSwitchThemeWhenTableViewCellReused = false
+    public var viewAutoSwitchThemeWhenCollectionViewCellReused = false
     // view controller config
-    var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
+    public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
+    public var viewControllerAutoSwitchThemeWhenViewWillAppear = false
     
-    static let instance = ThemeServiceConfig()
+    public static let instance = ThemeServiceConfig()
 }
 
 public extension UIView {
@@ -300,14 +315,14 @@ public extension UIView {
     func ch_awakeFromNib() {
         ch_awakeFromNib()
         if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
-            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+            ch_switchTheme()
         }
     }
     
     func ch_didMoveToSuperview() {
         ch_didMoveToSuperview()
         if ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToSuperView {
-            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+            ch_switchTheme()
         }
     }
     
@@ -317,7 +332,7 @@ public extension UIView {
         }
         
         dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(NSObject.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+            ch_exchangeInstanceMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
             ch_exchangeInstanceMethod(#selector(UIView.didMoveToSuperview), swizzledSelector: #selector(UIView.ch_didMoveToSuperview))
         }
     }
@@ -327,7 +342,7 @@ public extension UITableViewCell {
     func ch_prepareForReuse() {
         ch_prepareForReuse()
         if ch_themeServiceConfig.viewAutoSwitchThemeWhenTableViewCellReused {
-            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+            ch_switchTheme()
         }
     }
     
@@ -346,7 +361,7 @@ public extension UICollectionReusableView {
     func ch_prepareForReuse() {
         ch_prepareForReuse()
         if ch_themeServiceConfig.viewAutoSwitchThemeWhenCollectionViewCellReused {
-            ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+            ch_switchTheme()
         }
     }
     
@@ -368,8 +383,15 @@ public extension UIViewController {
     
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
-            ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
+        if ch_themeServiceConfig.viewControllerAutoSwitchThemeAfterAwakeFromNib {
+            ch_switchTheme()
+        }
+    }
+    
+    func ch_viewWillAppear(animated: Bool) {
+        ch_viewWillAppear(animated)
+        if ch_themeServiceConfig.viewControllerAutoSwitchThemeWhenViewWillAppear {
+            ch_switchTheme()
         }
     }
     
@@ -379,8 +401,8 @@ public extension UIViewController {
         }
         
         dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(NSObject.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
-            ch_exchangeInstanceMethod(#selector(UIView.didMoveToSuperview), swizzledSelector: #selector(UIView.ch_didMoveToSuperview))
+            ch_exchangeInstanceMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
+            ch_exchangeInstanceMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
         }
     }
 }
