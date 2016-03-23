@@ -24,8 +24,8 @@ Pod::Spec.new do |s|
                    * Chameleon aim at provide easy way to enable to app switch theme
                    DESC
 
-  s.homepage     = "https://github.com/zhangbozhb/Chameleon"
-  # s.screenshots  = https://github.com/zhangbozhb/Chameleon.gif"
+  s.homepage     = "https://github.com/zhangbozhb/ChameleonSwift"
+  # s.screenshots  = https://github.com/zhangbozhb/ChameleonSwift.gif"
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
