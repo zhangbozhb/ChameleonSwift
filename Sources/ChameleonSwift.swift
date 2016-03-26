@@ -142,11 +142,23 @@ public extension UIView {
     }
     
     /**
-     switch self and subviews theme, the data user it's superview data, act like ch_switchTheme(_:), but more efficient
+     target switch data that will switch to
+     
+     - returns: data used to switch
+     */
+    private func ch_fetchSwitchThemeData() -> ThemeSwitchData? {
+        if  ThemeServiceConfig.instance.viewAutoSwitchThemeDataSourceSuperView {
+            return superview?.ch_themeSwitchData
+        }
+        return ThemeSwitchMananger.instance.switchData
+    }
+    
+    /**
+     switch self and subviews theme, the data use depend on it config, act like ch_switchTheme(_:), but more efficient
      */
     public func ch_switchTheme() {
         ch_themeSwitchSub = true
-        ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
     }
     
     /**
@@ -154,7 +166,7 @@ public extension UIView {
      */
     private func ch_switchThemeSelfOnly() {
         ch_themeSwitchSub = false
-        ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
     }
 }
 
@@ -251,11 +263,23 @@ public extension UIViewController {
     }
     
     /**
-     switch self and childViewControllers's theme, the data user it's parentViewController's data, act like ch_switchTheme(_:), but more efficient
+     target switch data that will switch to
+     
+     - returns: data used to switch
+     */
+    private func ch_fetchSwitchThemeData() -> ThemeSwitchData? {
+        if  ThemeServiceConfig.instance.viewControllerAutoSwitchThemeDataSourceParent {
+            return parentViewController?.ch_themeSwitchData
+        }
+        return ThemeSwitchMananger.instance.switchData
+    }
+    
+    /**
+     switch self and subviews theme, the data use depend on it config, act like ch_switchTheme(_:), but more efficient
      */
     public func ch_switchTheme() {
         ch_themeSwitchSub = true
-        ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
     }
     
     /**
@@ -263,7 +287,7 @@ public extension UIViewController {
      */
     private func ch_switchThemeSelfOnly() {
         ch_themeSwitchSub = false
-        ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
     }
 }
 
@@ -290,6 +314,24 @@ class WeakRef<T: AnyObject> {
     }
 }
 
+public class ThemeSwitchMananger {
+    private var switchData:ThemeSwitchData?
+    
+    public var currentThemeData: AnyObject? {
+        if let d = ThemeSwitchMananger.instance.switchData {
+            return d.extData
+        }
+        return nil
+    }
+    
+    public func ch_switchTheme() {
+        ThemeService.instance.switchTheme(currentThemeData)
+    }
+    
+    public static let instance = ThemeSwitchMananger()
+}
+
+public var kChThemeSwitchNotification = "kChThemeSwitchNotification"
 private class ThemeService {
     private var viewControllers = [WeakRef<UIViewController>]()
     
@@ -297,6 +339,7 @@ private class ThemeService {
     
     func switchTheme(data: AnyObject?) {
         let switchData = ThemeSwitchData.init(data: data)
+        ThemeSwitchMananger.instance.switchData = switchData
         for window in UIApplication.sharedApplication().windows {
             // update view
             window.ch_switchThemeWrapper(switchData)
@@ -309,6 +352,13 @@ private class ThemeService {
                 viewController.ch_switchThemeWrapper(switchData)
             }
         }
+        var userInfo:[String: AnyObject] = [:]
+        if let data = data {
+            userInfo["data"] = data
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName(kChThemeSwitchNotification,
+                                                                  object: nil,
+                                                                  userInfo: userInfo)
     }
     
     private func registerViewController(controller: UIViewController) {
@@ -363,7 +413,13 @@ public class ThemeServiceConfig {
     public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
     public var viewControllerAutoSwitchThemeWhenViewWillAppear = false
     
+    
+    // data source config
+    public var viewAutoSwitchThemeDataSourceSuperView = false
+    public var viewControllerAutoSwitchThemeDataSourceParent = false
+    
     public static let instance = ThemeServiceConfig()
+    
 }
 
 public extension UIView {
@@ -427,4 +483,5 @@ public extension UIViewController {
         }
     }
 }
+
 
