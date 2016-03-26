@@ -2,7 +2,16 @@
 # ChameleonSwift
 
 
+[![Language: Swift 2](https://img.shields.io/badge/language-swift2-f48041.svg?style=flat)](https://developer.apple.com/swift)
+![Platform: iOS 8+](https://img.shields.io/badge/platform-iOS%208%2B-blue.svg?style=flat)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Cocoapods compatible](https://img.shields.io/badge/Cocoapods-compatible-4BC51D.svg?style=flat)](https://cocoapods.org)
+[![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/jiecao-fm/SwiftTheme/blob/master/LICENSE)
+
+
 A lightweight and pure Swift implemented library for switch app theme/skin. Chameleon aim at provide easy way to enable to app switch theme
+
+If your have any quesion, you can email me(zhangbozhb@gmail.com) or leave message.
 
 ## Requirements
 
@@ -108,3 +117,102 @@ $ pod install
 You should open the `{Project}.xcworkspace` instead of the `{Project}.xcodeproj` after you installed anything from CocoaPods.
 
 For more information about how to use CocoaPods, I suggest [this tutorial](http://www.raywenderlich.com/64546/introduction-to-cocoapods-2).
+
+
+
+# ChameleonSwift 介绍
+ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具有多种皮肤和主题.。ChameleonSwift 是一个纯 Swift 实现的扩展。
+由于主题/皮肤切换的复杂性，考虑到易于使用和可扩展行，本库并没有采用其他大多数库采用的方式（为不同的 view 添加不同的属性以达到主题切换），而是采用的是扩展 UIView, UIViewController的方式，你可以高度的定制你想要的皮肤。
+
+和其他主题或者皮肤库优点：
+* 简单。其他库在使用的时候，不同的View添加不同的属性，类型太多使用起来不容易
+* 易于扩展。本库并没有单独的属性用于处理不同主题/皮肤下的表现，而是采用闭包的方式来实现，具有更大的灵活行和自主性
+* 高度解耦：本扩展一个简单的配置，你可以专注与业务逻辑，而不需要考虑皮肤/主题支持使得你的代码变得丑陋不堪
+
+
+
+## 简单使用：
+### 第一步： view / view controller 支持多套皮肤/主题
+有两种方式：你可以通过闭包，也可以通过 override 父类的方法来实现
+闭包实现
+
+```swift
+let label = UILabel()
+label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+    label.text = "change theme"
+    // your code change theme/skin
+    ...
+}
+```
+override方法实现：
+```swift
+override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    // your code change theme/skin
+     ...
+}
+override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
+    // if false return ch_switchTheme:pre will not called
+    return true
+}
+```
+
+好了，通过上面的步骤你已经使得你的view可以支持多种主题了
+
+### 第二步：切换主题，皮肤
+你只需要调用一个方法就可以实现
+```swift
+    UIApplication.ch_switchTheme(yourdata)
+```
+
+
+当然，你可以选择行的修改你想要改变view / view controller 的主题
+view 切换调用:
+```swift
+    viewInstance.ch_switchTheme(yourdata)
+```
+view controller 调用:
+```swift
+    viewControllerInstance.ch_switchTheme(yourdata)
+```
+
+
+## 高级使用：
+### 自动调用
+在简单使用中，介绍了如何让你的 App 支持主题切换和如何进行切换。但是，你会发现还是很不方面，你需要不怨其烦的手动调用，主题修改的方法。为你将你从这种无止境的烦恼中解放出来。为你提供了主题切换自动调用配置 ThemeServiceConfig。提供的配置，可以满足你的绝大数需求。
+* viewAutoSwitchThemeAfterAwakeFromNib： 在 view 从 nib 文件awake的时候，自动调用
+* viewAutoSwitchThemeAfterMovedToWindow：在 view 被添加到windows上的时候，自动调用（为什么是这个方法而不是启发window呢？这个请看 apple 的官方文档， 对于 didMoveToWindow 的说明）
+* viewControllerAutoSwitchThemeAfterAwakeFromNib：在 view controller 从 nib 文件awake的时候，自动调用
+* viewControllerAutoSwitchThemeWhenViewWillAppear：在 view controller 即将显示之前的时候，自动调用
+
+是不是，很方便，简单?
+
+#### 注意
+不过任何好用，其实都是由代价的，自动调用使得主题切换调用更隐晦，响应的也不容易调试。为了你更好的使用自动调用，几点注意事项
+* 确保不抛出异常： ch_switchThemeBlock 或者 ch_switchTheme(_:pre:)， 不要抛出异常，否则会 crash
+* 非主题相关的状态保存在 view 或者 view controller中： 比如 一个 view 具有选中属性，在选中不选中的时候由不同的外观，你需要在某个地方存放这个状态，否则外观会被主题切换破坏调用。比如你 主题切换会把背景色设置为白色或黑色，你的 App 在某个地方人为的设置为红色，而你有恰好的配置了自动调用，那么你可能会惊讶的发现 view 颜色不是你想要的红色，你需要考虑到这一点。比较方便的方式是，你用某种方式记录你设置的红色状态，在 主题切换的时候，发现为红色是不修改背景色。
+
+
+### 常见问题：
+* 1，闭包 ch_switchThemeBlock 和 ch_switchTheme(_:pre:) 方法同时存在，会出现什么问题？
+闭包和函数都会被调用，只不过闭包会在函数调用的后面调用
+
+* 2，view controller 主题切换闭包,函数没有调用.
+如果一个修改主题的方法写在一个view controller中，而在使用的时候 只是将 controller的view添加到某个view上，而view controller本身没有加到任何 view controller下的时候， 可能出现 该 view contoller的方法，并没有自动调用或者在主题切换的时候也没有自动调用？怎么处理
+其实出现这种情况是正常的，这个涉及到本库切换的设计原理（后面提到）。你需要人为的调用主题切换方法，并 viewControllerInstance.ch_registerViewController()进行注册。就可以实现
+viewControllerInstance.ch_registerViewController() 这个方法在绝大多数的时候，你可以任何地方使用，不过建议在本情况出现的时候调用（可能导致调用顺序异常）
+* 3，主题切换函数或闭包调用顺序问题：
+    * 父子view（view controller）调用顺序：先调用子view（view controller）的，在调用父的(parent)
+    * 对于单个 view（view controller）：先调用主题切换函数，然后再试主题切换闭包
+    * view 和 view controller 调用顺序： App 主题切换的时候，先调用 view 的，然后才是 view controller的
+    * view controller 主题切换不会调用其 view 的主题切换函数和闭包
+
+
+### 原理
+采用的是扩展 view，view controller的方式来实现的。 主题切换的时候，是通过遍历 app 的view 和 view controller 树来实现切换的。
+
+
+### 广告
+本库已经在某新闻 App 中使用，经得住考验~
+
+
+
