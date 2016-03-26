@@ -6,7 +6,7 @@ A lightweight and pure Swift implemented library for switch app theme/skin. Cham
 
 ## Requirements
 
-* iOS 8.0
+* iOS 8.0+
 * Xcode 7.0 or above
 
 ## Usage
@@ -59,9 +59,7 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
         // 配置主题修改
         let tsc = ThemeServiceConfig.instance
         tsc.viewAutoSwitchThemeAfterAwakeFromNib = true
-        tsc.viewAutoSwitchThemeAfterMovedToSuperView = true
-        tsc.viewAutoSwitchThemeWhenTableViewCellReused = true
-        tsc.viewAutoSwitchThemeWhenCollectionViewCellReused = true
+        tsc.viewAutoSwitchThemeAfterMovedToWindow = true
         tsc.viewControllerAutoSwitchThemeAfterAwakeFromNib = false
         tsc.viewControllerAutoSwitchThemeWhenViewWillAppear = true
     ```

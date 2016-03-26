@@ -42,6 +42,7 @@ private class ThemeSwitchData {
 
 private var kThemeLastSwitchKey: Void?
 private var kThemeSwitchBlockKey: Void?
+private var kThemeSwitchAutoSubKey: Void?
 public typealias SwitchThemeBlock = ((now:AnyObject?, pre:AnyObject?) -> Void)
 private class ObjectWrapper<T> {
     var value :T?
@@ -57,6 +58,18 @@ public extension UIView {
         }
         set {
             objc_setAssociatedObject(self, &kThemeLastSwitchKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    private var ch_themeSwitchSub: Bool {
+        get {
+            if let v = objc_getAssociatedObject(self, &kThemeSwitchAutoSubKey) as? Bool {
+                return v
+            }
+            return false
+        }
+        set {
+            objc_setAssociatedObject(self, &kThemeSwitchAutoSubKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -103,10 +116,18 @@ public extension UIView {
         return true
     }
     
+    /**
+     method switch theme/skin. default will call it's subview to switch theme
+     
+     - parameter now: the data you switch theme
+     - parameter pre: the old data you switch theme
+     */
     public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
         // switch sub views
-        for sub in subviews {
-            sub.ch_switchThemeWrapper(ch_themeSwitchData)
+        if ch_themeSwitchSub {
+            for sub in subviews {
+                sub.ch_switchThemeWrapper(ch_themeSwitchData)
+            }
         }
     }
     
@@ -116,6 +137,7 @@ public extension UIView {
      - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
      */
     public func ch_switchTheme(data:AnyObject?) {
+        ch_themeSwitchSub = true
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
     
@@ -123,6 +145,15 @@ public extension UIView {
      switch self and subviews theme, the data user it's superview data, act like ch_switchTheme(_:), but more efficient
      */
     public func ch_switchTheme() {
+        ch_themeSwitchSub = true
+        ch_switchThemeWrapper(superview?.ch_themeSwitchData)
+    }
+    
+    /**
+     this method should use internal for auto switch config (for circleCall method)
+     */
+    private func ch_switchThemeSelfOnly() {
+        ch_themeSwitchSub = false
         ch_switchThemeWrapper(superview?.ch_themeSwitchData)
     }
 }
@@ -134,6 +165,18 @@ public extension UIViewController {
         }
         set {
             objc_setAssociatedObject(self, &kThemeLastSwitchKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    private var ch_themeSwitchSub: Bool {
+        get {
+            if let v = objc_getAssociatedObject(self, &kThemeSwitchAutoSubKey) as? Bool {
+                return v
+            }
+            return false
+        }
+        set {
+            objc_setAssociatedObject(self, &kThemeSwitchAutoSubKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
     
@@ -182,10 +225,18 @@ public extension UIViewController {
         return true
     }
     
+    /**
+     method switch theme/skin. default will call it's childViewControllers to switch theme
+     
+     - parameter now: the data you switch theme
+     - parameter pre: the old data you switch theme
+     */
     public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
         // switch sub view controller
-        for viewController in childViewControllers {
-            viewController.ch_switchThemeWrapper(ch_themeSwitchData)
+        if ch_themeSwitchSub {
+            for viewController in childViewControllers {
+                viewController.ch_switchThemeWrapper(ch_themeSwitchData)
+            }
         }
     }
     
@@ -195,6 +246,7 @@ public extension UIViewController {
      - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
      */
     public func ch_switchTheme(data:AnyObject?) {
+        ch_themeSwitchSub = true
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
     
@@ -202,6 +254,15 @@ public extension UIViewController {
      switch self and childViewControllers's theme, the data user it's parentViewController's data, act like ch_switchTheme(_:), but more efficient
      */
     public func ch_switchTheme() {
+        ch_themeSwitchSub = true
+        ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
+    }
+    
+    /**
+     this method should use internal for auto switch config (for circleCall method)
+     */
+    private func ch_switchThemeSelfOnly() {
+        ch_themeSwitchSub = false
         ch_switchThemeWrapper(parentViewController?.ch_themeSwitchData)
     }
 }
@@ -297,9 +358,7 @@ public extension UIApplication {
 public class ThemeServiceConfig {
     // view config
     public var viewAutoSwitchThemeAfterAwakeFromNib = false
-    public var viewAutoSwitchThemeAfterMovedToSuperView = false
-    public var viewAutoSwitchThemeWhenTableViewCellReused = false
-    public var viewAutoSwitchThemeWhenCollectionViewCellReused = false
+    public var viewAutoSwitchThemeAfterMovedToWindow = false
     // view controller config
     public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
     public var viewControllerAutoSwitchThemeWhenViewWillAppear = false
@@ -319,10 +378,10 @@ public extension UIView {
         }
     }
     
-    func ch_didMoveToSuperview() {
-        ch_didMoveToSuperview()
-        if ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToSuperView {
-            ch_switchTheme()
+    func ch_didMoveToWindow() {
+        ch_didMoveToWindow()
+        if ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToWindow {
+            ch_switchThemeSelfOnly()
         }
     }
     
@@ -333,45 +392,7 @@ public extension UIView {
         
         dispatch_once(&Static.token) {
             ch_exchangeInstanceMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
-            ch_exchangeInstanceMethod(#selector(UIView.didMoveToSuperview), swizzledSelector: #selector(UIView.ch_didMoveToSuperview))
-        }
-    }
-}
-
-public extension UITableViewCell {
-    func ch_prepareForReuse() {
-        ch_prepareForReuse()
-        if ch_themeServiceConfig.viewAutoSwitchThemeWhenTableViewCellReused {
-            ch_switchTheme()
-        }
-    }
-    
-    override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
-        
-        dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(UITableViewCell.prepareForReuse), swizzledSelector: #selector(UITableViewCell.ch_prepareForReuse))
-        }
-    }
-}
-
-public extension UICollectionReusableView {
-    func ch_prepareForReuse() {
-        ch_prepareForReuse()
-        if ch_themeServiceConfig.viewAutoSwitchThemeWhenCollectionViewCellReused {
-            ch_switchTheme()
-        }
-    }
-    
-    override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
-        
-        dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(UITableViewCell.prepareForReuse), swizzledSelector: #selector(UITableViewCell.ch_prepareForReuse))
+            ch_exchangeInstanceMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
         }
     }
 }
@@ -391,7 +412,7 @@ public extension UIViewController {
     func ch_viewWillAppear(animated: Bool) {
         ch_viewWillAppear(animated)
         if ch_themeServiceConfig.viewControllerAutoSwitchThemeWhenViewWillAppear {
-            ch_switchTheme()
+            ch_switchThemeSelfOnly()
         }
     }
     
