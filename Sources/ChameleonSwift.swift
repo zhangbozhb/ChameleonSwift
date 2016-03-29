@@ -173,11 +173,17 @@ public extension UIView {
      
      - returns: data used to switch
      */
-    private func ch_fetchSwitchThemeData() -> ThemeSwitchData? {
+    private func ch_fetchSwitchThemeData(requireNew:Bool=true) -> ThemeSwitchData? {
+        var data:ThemeSwitchData? = nil
         if ch_themeSwitchInternalConf.dataSourceSuper {
-            return superview?.ch_themeSwitchData
+            data = superview?.ch_themeSwitchData
+        } else {
+            data = ThemeSwitchMananger.instance.switchData
         }
-        return ThemeSwitchMananger.instance.switchData
+        if requireNew {
+            return ThemeSwitchData.init(data: data?.extData)
+        }
+        return data
     }
     
     /**
@@ -190,12 +196,21 @@ public extension UIView {
     }
     
     /**
+     this method should use internal for auto init
+     */
+    private func ch_switchThemeSelfInit() {
+        ch_themeSwitchInternalConf = ch_themeSwitchInternalConf.updatePassDown(true)
+        ch_themeSwitchInternalConf.switchRecursion = true
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData(false))
+    }
+    
+    /**
      this method should use internal for auto switch config (for circleCall method)
      */
     private func ch_switchThemeSelfOnly() {
         ch_themeSwitchInternalConf = ch_themeSwitchInternalConf.updatePassDown(false)
         ch_themeSwitchInternalConf.switchRecursion = false
-        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData(false))
     }
 }
 
@@ -237,7 +252,7 @@ public extension UIViewController {
             objc_setAssociatedObject(self, &kThemeSwitchBlockKey, ObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-
+    
     private func ch_switchThemeWrapper(data:ThemeSwitchData?) {
         let preData = ch_themeSwitchData
         guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
@@ -303,11 +318,17 @@ public extension UIViewController {
      
      - returns: data used to switch
      */
-    private func ch_fetchSwitchThemeData() -> ThemeSwitchData? {
+    private func ch_fetchSwitchThemeData(requireNew:Bool=true) -> ThemeSwitchData? {
+        var data:ThemeSwitchData? = nil
         if ch_themeSwitchInternalConf.dataSourceSuper {
-            return parentViewController?.ch_themeSwitchData
+            data = parentViewController?.ch_themeSwitchData
+        } else {
+            data = ThemeSwitchMananger.instance.switchData
         }
-        return ThemeSwitchMananger.instance.switchData
+        if requireNew {
+            return ThemeSwitchData.init(data: data?.extData)
+        }
+        return data
     }
     
     /**
@@ -320,12 +341,21 @@ public extension UIViewController {
     }
     
     /**
+     this method should use internal for auto init
+     */
+    private func ch_switchThemeSelfInit() {
+        ch_themeSwitchInternalConf = ch_themeSwitchInternalConf.updatePassDown(true)
+        ch_themeSwitchInternalConf.switchRecursion = true
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData(false))
+    }
+    
+    /**
      this method should use internal for auto switch config (for circleCall method)
      */
     private func ch_switchThemeSelfOnly() {
         ch_themeSwitchInternalConf = ch_themeSwitchInternalConf.updatePassDown(false)
         ch_themeSwitchInternalConf.switchRecursion = false
-        ch_switchThemeWrapper(ch_fetchSwitchThemeData())
+        ch_switchThemeWrapper(ch_fetchSwitchThemeData(false))
     }
 }
 
@@ -471,7 +501,7 @@ public extension UIView {
     func ch_awakeFromNib() {
         ch_awakeFromNib()
         if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
-            ch_switchTheme()
+            ch_switchThemeSelfInit()
         }
     }
     
@@ -502,7 +532,7 @@ public extension UIViewController {
     func ch_awakeFromNib() {
         ch_awakeFromNib()
         if ch_themeServiceConfig.viewControllerAutoSwitchThemeAfterAwakeFromNib {
-            ch_switchTheme()
+            ch_switchThemeSelfInit()
         }
     }
     
