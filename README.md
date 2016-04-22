@@ -155,7 +155,9 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
     return true
 }
 ```
-
+参数说明：
+* now: 你切换主题是传递进来的参数，比如是白天，还是黑夜等待。下面第二步提到你传递进来的数据UIApplication.ch_switchTheme(yourdata)
+* pre: 上次你主题切换使用的参数
 好了，通过上面的步骤你已经使得你的view可以支持多种主题了
 
 ### 第二步：切换主题，皮肤
