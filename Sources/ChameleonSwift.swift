@@ -12,9 +12,9 @@ import UIKit
 private class ThemeSwitchData {
     var lastTimestamp:Int64 = 0
     var lastSignature:String? = nil
-    var extData:String? = nil
+    var extData:AnyObject? = nil
     
-    init(data:String?) {
+    init(data:AnyObject?) {
         lastTimestamp = Int64(NSDate().timeIntervalSince1970 * 1000)
         lastSignature = NSUUID.init().UUIDString
         extData = data
@@ -55,7 +55,7 @@ private class ThemeSwitchInternalConf {
 private var kThemeLastSwitchKey: Void?
 private var kThemeSwitchBlockKey: Void?
 private var kThemeSwitchInternalConfigKey: Void?
-public typealias SwitchThemeBlock = ((now:String?, pre:String?) -> Void)
+public typealias SwitchThemeBlock = ((now:AnyObject?, pre:AnyObject?) -> Void)
 private class ObjectWrapper<T> {
     var value :T?
     init(value:T?) {
@@ -99,6 +99,10 @@ public extension UIView {
             objc_setAssociatedObject(self, &kThemeSwitchBlockKey, ObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
+
+    func ch_setSwitchThemeBlock(block:SwitchThemeBlock?)  {
+        ch_switchThemeBlock = block
+    }
     
     private func ch_switchThemeWrapper(data:ThemeSwitchData?) {
         let preData = ch_themeSwitchData
@@ -127,7 +131,7 @@ public extension UIView {
      
      - returns: true switch theme will happen, or false ignore switch theme
      */
-    public func ch_shouldSwitchTheme(now:String?, pre: String?) -> Bool {
+    public func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
         return true
     }
     
@@ -137,7 +141,7 @@ public extension UIView {
      - parameter now: the data you switch theme
      - parameter pre: the old data you switch theme
      */
-    public func ch_switchTheme(now:String?, pre: String?) {
+    public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
         // switch sub views
         if ch_themeSwitchInternalConf.recursion {
             for sub in subviews {
@@ -222,6 +226,10 @@ public extension UIViewController {
         }
     }
     
+    func ch_setSwitchThemeBlock(block:SwitchThemeBlock?)  {
+        ch_switchThemeBlock = block
+    }
+    
     /// when theme switch happend, this block will run, default is nil
     /// Note: this block will run after ch_switchTheme(_:pre:) method
     var ch_switchThemeBlock:SwitchThemeBlock? {
@@ -263,7 +271,7 @@ public extension UIViewController {
      
      - returns: true switch theme will happen, or false ignore switch theme
      */
-    public func ch_shouldSwitchTheme(now:String?, pre: String?) -> Bool {
+    public func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
         return true
     }
     
@@ -273,7 +281,7 @@ public extension UIViewController {
      - parameter now: the data you switch theme
      - parameter pre: the old data you switch theme
      */
-    public func ch_switchTheme(now:String?, pre: String?) {
+    public func ch_switchTheme(now:AnyObject?, pre: AnyObject?) {
         // switch sub view controller
         if ch_themeSwitchInternalConf.recursion {
             for viewController in childViewControllers {
@@ -358,7 +366,7 @@ class WeakRef<T: AnyObject> {
 public class ThemeSwitchMananger {
     private var switchData = ThemeSwitchData.init(data: nil)
     
-    public var themeData: String? {
+    public var themeData: AnyObject? {
         return switchData.extData
     }
     
@@ -375,7 +383,7 @@ private class ThemeService {
     
     static let instance = ThemeService()
     
-    func switchTheme(data: String?) {
+    func switchTheme(data: AnyObject?) {
         let switchData = ThemeSwitchData.init(data: data)
         ThemeSwitchMananger.instance.switchData = switchData
         let internalConf = ThemeSwitchInternalConf.init(passConf: true)
@@ -397,7 +405,7 @@ private class ThemeService {
                 viewController.ch_switchThemeWrapper(switchData)
             }
         }
-        var userInfo:[String: String] = [:]
+        var userInfo:[String: AnyObject] = [:]
         if let data = data {
             userInfo["data"] = data
         }

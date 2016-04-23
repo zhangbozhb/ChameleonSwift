@@ -20,16 +20,16 @@ class SecondViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func ch_shouldSwitchTheme(now: String?, pre: String?) -> Bool {
-        if let a = now, b = pre where a != b{
+    override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
+        if let a = now as? String, b = pre as? String where a != b{
             return false
         }
         return true
     }
     
-    override func ch_switchTheme(now: String?, pre: String?) {
-        if let now = now {
-            if let color = ColorName(rawValue: now) {
+    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
                 self.view.backgroundColor = UIColor.colorWithHexString(color.rawValue)
             }
         }

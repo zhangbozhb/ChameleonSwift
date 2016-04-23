@@ -17,9 +17,9 @@ class CustomerView1:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(now: String?, pre: String?) {
-        if let now = now {
-            if let color = ColorName(rawValue: now) {
+    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
                 self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
             }
         }
@@ -35,16 +35,16 @@ class CustomerView2:UILabel {
     }
     
     
-    override func ch_shouldSwitchTheme(now: String?, pre: String?) -> Bool {
-        if let a = now, b = pre where a != b {
+    override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
+        if let a = now as? String, b = pre as? String where a != b {
             return false
         }
         return true
     }
     
-    override func ch_switchTheme(now: String?, pre: String?) {
-        if let now = now {
-            if let color = ColorName(rawValue: now) {
+    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+        if let now = now, value = now as? String {
+            if let color = ColorName(rawValue: value) {
                 self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
             }
         }
@@ -69,13 +69,13 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                  .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
         
-        systemLabel.ch_switchThemeBlock = { (now:String?, pre:String?) -> Void in
+        systemLabel.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
             let df = NSDateFormatter.init()
             df.dateFormat = "mm:ss"
             self.systemLabel.text = df.stringFromDate(NSDate.init())
             
-            if let now = now {
-                if let color = ColorName(rawValue: now) {
+            if let now = now, value = now as? String {
+                if let color = ColorName(rawValue: value) {
                     self.systemLabel.textColor = UIColor.colorWithHexString(color.rawValue)
                 }
             }
