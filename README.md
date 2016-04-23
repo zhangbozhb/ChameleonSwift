@@ -23,7 +23,7 @@ If your have any quesion, you can email me(zhangbozhb@gmail.com) or leave messag
 **1**, Enable view to switch theme ability:
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:String?, pre:String?) -> Void in
     label.text = "change theme"
     // your code change theme/skin
     ...
@@ -31,11 +31,11 @@ label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
 ```
 Or your can override method of view: ch_switchTheme:pre
 ```swift
-override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+override func ch_switchTheme(now: String?, pre: String?) {
     // your code change theme/skin
      ...
 }
-override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
+override func ch_shouldSwitchTheme(now:String?, pre: String?) -> Bool {
     // if false return ch_switchTheme:pre will not called
     return true 
 }
@@ -138,7 +138,7 @@ ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具
 
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:String?, pre:String?) -> Void in
     label.text = "change theme"
     // your code change theme/skin
     ...
@@ -146,11 +146,11 @@ label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
 ```
 override方法实现：
 ```swift
-override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+override func ch_switchTheme(now: String?, pre: String?) {
     // your code change theme/skin
      ...
 }
-override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
+override func ch_shouldSwitchTheme(now:String?, pre: String?) -> Bool {
     // if false return ch_switchTheme:pre will not called
     return true
 }
