@@ -401,6 +401,8 @@ private class ThemeService {
         // enforce update view controller
         for weakRef in viewControllers {
             if let viewController = weakRef.value where nil == viewController.parentViewController {
+                viewController.view.ch_themeSwitchInternalConf = internalConf
+                viewController.view.ch_switchThemeWrapper(switchData)
                 viewController.ch_themeSwitchInternalConf = internalConf
                 viewController.ch_switchThemeWrapper(switchData)
             }
@@ -484,7 +486,7 @@ public extension UIView {
     
     func ch_didMoveToWindow() {
         ch_didMoveToWindow()
-        if ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToWindow {
+        if let _ = window where ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToWindow {
             ch_switchThemeSelfOnly()
         }
     }
