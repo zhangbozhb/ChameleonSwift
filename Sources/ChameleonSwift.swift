@@ -496,6 +496,10 @@ public extension UIView {
             static var token: dispatch_once_t = 0
         }
         
+        if self !== UIView.self {
+            return
+        }
+        
         dispatch_once(&Static.token) {
             ch_exchangeInstanceMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
             ch_exchangeInstanceMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
@@ -525,6 +529,10 @@ public extension UIViewController {
     override class func initialize() {
         struct Static {
             static var token: dispatch_once_t = 0
+        }
+        
+        if self !== UIViewController.self {
+            return
         }
         
         dispatch_once(&Static.token) {
