@@ -158,7 +158,7 @@ public extension UIView {
      
      - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
      */
-    public func ch_switchTheme(data:String?) {
+    public func ch_switchTheme(data:AnyObject?) {
         ch_themeSwitchInternalConf.passConf = true
         ch_themeSwitchInternalConf.recursion = true
         ch_themeSwitchInternalConf.dataSelf = true
@@ -298,7 +298,7 @@ public extension UIViewController {
      
      - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
      */
-    public func ch_switchTheme(data:String?) {
+    public func ch_switchTheme(data:AnyObject?) {
         ch_themeSwitchInternalConf.passConf = true
         ch_themeSwitchInternalConf.recursion = true
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
@@ -447,7 +447,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    func ch_switchTheme(data: String? = nil) {
+    func ch_switchTheme(data: AnyObject? = nil) {
         ThemeService.instance.switchTheme(data)
     }
     /**
@@ -455,7 +455,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    class func ch_switchTheme(data: String? = nil) {
+    class func ch_switchTheme(data: AnyObject? = nil) {
         ThemeService.instance.switchTheme(data)
     }
 }
