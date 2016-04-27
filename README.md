@@ -44,7 +44,13 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
 * pre: previous data that you pass to switchTheme
 
 
-**2** Switch Theme
+**2** Set your Theme
+* Switch whole application theme
+``` swift
+    ThemeSwitchMananger.instance.themeData = "your theme data"
+```
+
+**3** Switch Theme
 * Switch whole application theme
 ``` swift
     UIApplication.ch_switchTheme(yourdata)
@@ -164,7 +170,13 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
 * pre: 上次你主题切换使用的参数
 好了，通过上面的步骤你已经使得你的view可以支持多种主题了
 
-### 第二步：切换主题，皮肤
+### 第二步: 设置的主题数据
+* Switch whole application theme
+``` swift
+    ThemeSwitchMananger.instance.themeData = "your theme data"
+```
+
+### 第三步：切换主题，皮肤
 你只需要调用一个方法就可以实现
 ```swift
     UIApplication.ch_switchTheme(yourdata)
