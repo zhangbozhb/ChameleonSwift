@@ -34,16 +34,15 @@ private class ThemeSwitchInternalConf {
     var dataSelf = false    // indicate where use data ThemeSwitchMananger, false will use ThemeSwitchMananger, true will use current
     var recursion = true
     private(set) var passConf = true    // switch config pass to subview/child view controller
-
+    
     init() {
-
     }
     
     convenience init(passConf:Bool) {
         self.init()
         self.passConf = passConf
     }
-
+    
     func copy() -> ThemeSwitchInternalConf {
         let other = ThemeSwitchInternalConf.init()
         other.recursion = recursion
@@ -99,7 +98,7 @@ public extension UIView {
             objc_setAssociatedObject(self, &kThemeSwitchBlockKey, ObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-
+    
     func ch_setSwitchThemeBlock(block:SwitchThemeBlock?)  {
         ch_switchThemeBlock = block
     }
@@ -164,7 +163,7 @@ public extension UIView {
         ch_themeSwitchInternalConf.dataSelf = true
         ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
     }
-
+    
     /**
      switch self and subviews theme, the data use depend on it config
      */
@@ -177,7 +176,7 @@ public extension UIView {
             ch_switchThemeWrapper(ThemeSwitchMananger.instance.switchData)
         }
     }
-
+    
     /**
      this method should use internal for auto init
      */
@@ -260,6 +259,9 @@ public extension UIViewController {
         
         // call switch theme block
         ch_switchThemeBlock?(now:data?.extData, pre:preData?.extData)
+        
+        // update status bar
+        setNeedsStatusBarAppearanceUpdate()
     }
     
     /**
@@ -341,8 +343,8 @@ public extension UIViewController {
 }
 
 
-extension NSObject {
-    class func ch_exchangeInstanceMethod(originalSelector:Selector, swizzledSelector:Selector) {
+public extension NSObject {
+    class func ch_swizzledMethod(originalSelector:Selector, swizzledSelector:Selector) {
         let originalMethod = class_getInstanceMethod(self, originalSelector)
         let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
         
@@ -460,16 +462,65 @@ public extension UIApplication {
     }
 }
 
+
+private enum ThemeSwizzledType: Int {
+    case UIViewAwakeFromNib
+    case UIViewDidMoveToWindow
+    case UIViewControllerAwakeFromNib
+    case UIViewControllerViewWillAppear
+}
+
 public class ThemeServiceConfig {
     // view config
-    public var viewAutoSwitchThemeAfterAwakeFromNib = false
-    public var viewAutoSwitchThemeAfterMovedToWindow = false
+    public var viewAutoSwitchThemeAfterAwakeFromNib = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    public var viewAutoSwitchThemeAfterMovedToWindow = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
     // view controller config
-    public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false
-    public var viewControllerAutoSwitchThemeWhenViewWillAppear = false
+    public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    public var viewControllerAutoSwitchThemeWhenViewWillAppear = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
     
     public static let instance = ThemeServiceConfig()
     
+    
+    private var swizzledRecords:[ThemeSwizzledType: Bool] = [:]
+    private func swizzledWithConfig() {
+        if let _ = swizzledRecords[.UIViewAwakeFromNib] {
+        } else if viewAutoSwitchThemeAfterAwakeFromNib {
+            UIView.ch_swizzledMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+            swizzledRecords[.UIViewAwakeFromNib] = true
+        }
+        if let _ = swizzledRecords[.UIViewDidMoveToWindow] {
+        } else if viewAutoSwitchThemeAfterMovedToWindow {
+            UIView.ch_swizzledMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
+            swizzledRecords[.UIViewDidMoveToWindow] = true
+        }
+        
+        if let _ = swizzledRecords[.UIViewControllerAwakeFromNib] {
+        } else if viewControllerAutoSwitchThemeAfterAwakeFromNib {
+            UIViewController.ch_swizzledMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
+            swizzledRecords[.UIViewControllerAwakeFromNib] = true
+        }
+        if let _ = swizzledRecords[.UIViewControllerViewWillAppear] {
+        } else if viewControllerAutoSwitchThemeWhenViewWillAppear {
+            UIViewController.ch_swizzledMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
+            swizzledRecords[.UIViewControllerViewWillAppear] = true
+        }
+    }
 }
 
 public extension UIView {
@@ -490,21 +541,6 @@ public extension UIView {
             ch_switchThemeSelfOnly()
         }
     }
-    
-    override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
-        
-        if self !== UIView.self {
-            return
-        }
-        
-        dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
-            ch_exchangeInstanceMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
-        }
-    }
 }
 
 public extension UIViewController {
@@ -523,21 +559,6 @@ public extension UIViewController {
         ch_viewWillAppear(animated)
         if ch_themeServiceConfig.viewControllerAutoSwitchThemeWhenViewWillAppear {
             ch_switchThemeSelfOnly()
-        }
-    }
-    
-    override class func initialize() {
-        struct Static {
-            static var token: dispatch_once_t = 0
-        }
-        
-        if self !== UIViewController.self {
-            return
-        }
-        
-        dispatch_once(&Static.token) {
-            ch_exchangeInstanceMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
-            ch_exchangeInstanceMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
         }
     }
 }
