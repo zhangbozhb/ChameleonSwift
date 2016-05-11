@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "ChameleonSwift"
-  s.version      = "0.0.9"
+  s.version      = "0.0.10"
   s.summary      = "A lightweight and pure Swift implemented library for change app theme/skin"
 
   s.description  = <<-DESC
