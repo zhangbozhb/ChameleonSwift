@@ -18,10 +18,11 @@ class CustomerView1:UILabel {
     }
     
     override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-        if let now = now, value = now as? String {
-            if let color = ColorName(rawValue: value) {
-                self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
-            }
+        if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+            text = "\(now)"
+            backgroundColor = UIColor.colorWithHexString(now.rawValue)
+        } else {
+            text = "color not defined"
         }
     }
 }
@@ -36,17 +37,18 @@ class CustomerView2:UILabel {
     
     
     override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
-        if let a = now as? String, b = pre as? String where a != b {
+        if let a = ThemeSwitchHelper<ColorName>.parseTheme(now) where a == .AndroidGree || a == .AntiqueBras {
             return false
         }
         return true
     }
     
     override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-        if let now = now, value = now as? String {
-            if let color = ColorName(rawValue: value) {
-                self.backgroundColor = UIColor.colorWithHexString(color.rawValue)
-            }
+        if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+            text = "\(now) no AndroidGree AntiqueBras"
+            backgroundColor = UIColor.colorWithHexString(now.rawValue)
+        } else {
+            text = "color not defined"
         }
     }
 }
@@ -69,16 +71,16 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                  .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
         
-        systemLabel.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-            let df = NSDateFormatter.init()
-            df.dateFormat = "mm:ss"
-            self.systemLabel.text = df.stringFromDate(NSDate.init())
-            
-            if let now = now, value = now as? String {
-                if let color = ColorName(rawValue: value) {
-                    self.systemLabel.textColor = UIColor.colorWithHexString(color.rawValue)
-                }
+        systemLabel.ch_switchThemeBlock = { [weak self](now:AnyObject?, pre:AnyObject?) -> Void in
+            if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+                self?.systemLabel.backgroundColor = UIColor.colorWithHexString(now.rawValue)
+                self?.systemLabel.text = "\(now)"
+            } else {
+                let df = NSDateFormatter.init()
+                df.dateFormat = "mm:ss"
+                self?.systemLabel.text = df.stringFromDate(NSDate.init()) + "\tno data in ch_switchThemeBlock"
             }
+            
         }
     }
 
@@ -95,18 +97,19 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         return datas.count
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return datas[row].rawValue
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+        let label = UILabel()
+        label.textAlignment = .Center
+        label.text = "\(datas[row])"
+        return label
     }
     
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if pickerView == self.leftPick {
-            customerView1.text = datas[row].rawValue
-        } else {
-            customerView2.text = datas[row].rawValue
+        if let cell = pickerView.viewForRow(row, forComponent: component) {
+            cell.backgroundColor = UIColor.colorWithHexString(datas[row].rawValue)
         }
         
-        UIApplication.ch_switchTheme(datas[row].rawValue)
+        UIApplication.ch_switchTheme(datas[row])
     }
 }
 

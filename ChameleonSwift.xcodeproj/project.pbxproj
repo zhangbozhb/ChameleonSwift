@@ -17,6 +17,9 @@
 		ED84264E1C9D364C0083A161 /* ChameleonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */; };
 		ED84266A1C9D63CC0083A161 /* ChameleonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426691C9D63CC0083A161 /* ChameleonSwift.swift */; };
 		EDBA43C01CA12E2B0016283E /* Datas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBA43BF1CA12E2B0016283E /* Datas.swift */; };
+		EDC612A21CE3231C00AA0CDA /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC612A11CE3231C00AA0CDA /* Config.swift */; };
+		EDC612A41CE3233800AA0CDA /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC612A31CE3233800AA0CDA /* Utils.swift */; };
+		EDC612A61CE3246E00AA0CDA /* Shortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDC612A51CE3246E00AA0CDA /* Shortcut.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +56,9 @@
 		ED84264F1C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED8426691C9D63CC0083A161 /* ChameleonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChameleonSwift.swift; sourceTree = "<group>"; };
 		EDBA43BF1CA12E2B0016283E /* Datas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datas.swift; sourceTree = "<group>"; };
+		EDC612A11CE3231C00AA0CDA /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		EDC612A31CE3233800AA0CDA /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		EDC612A51CE3246E00AA0CDA /* Shortcut.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shortcut.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +144,9 @@
 			isa = PBXGroup;
 			children = (
 				ED8426691C9D63CC0083A161 /* ChameleonSwift.swift */,
+				EDC612A11CE3231C00AA0CDA /* Config.swift */,
+				EDC612A31CE3233800AA0CDA /* Utils.swift */,
+				EDC612A51CE3246E00AA0CDA /* Shortcut.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -276,8 +285,11 @@
 				ED8426301C9D364C0083A161 /* SecondViewController.swift in Sources */,
 				ED84262C1C9D364C0083A161 /* AppDelegate.swift in Sources */,
 				EDBA43C01CA12E2B0016283E /* Datas.swift in Sources */,
+				EDC612A41CE3233800AA0CDA /* Utils.swift in Sources */,
 				ED84266A1C9D63CC0083A161 /* ChameleonSwift.swift in Sources */,
+				EDC612A61CE3246E00AA0CDA /* Shortcut.swift in Sources */,
 				ED84262E1C9D364C0083A161 /* FirstViewController.swift in Sources */,
+				EDC612A21CE3231C00AA0CDA /* Config.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

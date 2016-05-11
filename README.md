@@ -20,49 +20,68 @@ If your have any quesion, you can email me(zhangbozhb@gmail.com) or leave messag
 
 ## Usage
 ### Simple usage
+
+##### Assume
+You can define you theme with any data. Let's assume you theme data is ThemeStyle (Day, Night). ThemeStyle is enum type, however you can define your theme with any type.
+
+
 **1**, Enable view to switch theme ability:
 ```swift
 let label = UILabel()
 label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-    label.text = "change theme"
     // your code change theme/skin
-    ...
+    if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) { // get your ThemeStyle from now
+        label.text = "\(now)"
+        ...
+    }
 }
 ```
 Or your can override method of view: ch_switchTheme:pre
 ```swift
 override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
     // your code change theme/skin
-     ...
+    if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) {
+        ...
+    }
 }
 override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
     // if false return ch_switchTheme:pre will not called
     return true 
 }
 ```
-* now: data that you pass to switchTheme
+* now: data that you pass to switchTheme. your can use ThemeSwitchHelper<ThemeStyle>.parseTheme(now) get your real theme data
 * pre: previous data that you pass to switchTheme
 
 
 **2** Set your Theme
 * Switch whole application theme
 ``` swift
-    ThemeSwitchMananger.instance.themeData = "your theme data"
+    ThemeServiceConfig.instance.initThemeData(data: ThemeStyle.Day)
 ```
+* Note: if you not initThemeData, arg now in ch_switchTheme:pre or ch_switchThemeBlock may nil
 
 **3** Switch Theme
 * Switch whole application theme
 ``` swift
-    UIApplication.ch_switchTheme(yourdata)
+    UIApplication.ch_switchTheme(ThemeStyle.Night)
 ```
-* Switch specified view's theme
+* Switch specified view's theme (sub view as well)
 ``` swift
-    viewInstance.ch_switchTheme(yourdata)
+    viewInstance.ch_switchTheme(ThemeStyle.Night)
  ```
-* Switch specified view controller's theme
+* Switch specified view controller's theme (child view controlls as well)
 ``` swift
-    viewControllerInstance.ch_switchTheme(yourdata)
+    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
  ```
+
+### Useful Helper Function
+Some useful function define in ThemeSwitchHelper.
+* get current theme: ThemeSwitchHelper<Your Defined Theme Class>.currentTheme
+* get current theme from args: ThemeSwitchHelper<Your Defined Theme Class>.parseTheme()
+* get current theme image: ThemeSwitchHelper<Your Defined Theme Class>.image()
+* get current theme color: ThemeSwitchHelper<Your Defined Theme Class>.color()
+* get current theme data, if your find image/color cannot satisfy your needs: ThemeSwitchHelper<Your Defined Theme Class>.currentThemeData()
+
 
 ### Advance usage
 
@@ -71,7 +90,7 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
     Several properties are pre defined for you. When specified property is true, ch_ch_switchTheme(_:) user it's parent data
 
     ```swift
-        // 配置主题修改
+        // config your theme switch
         let tsc = ThemeServiceConfig.instance
         tsc.viewAutoSwitchThemeAfterAwakeFromNib = true
         tsc.viewAutoSwitchThemeAfterMovedToWindow = true
@@ -143,16 +162,24 @@ ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具
 
 ## 简单使用：
 ### 第一步： view / view controller 支持多套皮肤/主题
+
+##### 假设
+假设你使用默认的 ThemeStyle（枚举类型,由Day, Night), 下面代码中使用 ThemeStyle 作为你使用的主题类型; 当然在实际使用中, 可以完成你自己定义的主题类型,可以是枚举,数字,类,可以是任意类型
+
 有两种方式：你可以通过闭包，也可以通过 override 父类的方法来实现
 闭包实现
 
 ```swift
 let label = UILabel()
 label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
-    label.text = "change theme"
-    // your code change theme/skin
-    ...
+    // 你修改主题的代码
+    if let now = ThemeSwitchHelper<你定义的主题类型>.parseTheme(now) { // 获取 真正的主题
+        label.text = "\(now)"
+        ...
+    }
 }
+* 注意: now 这个数据可能会空,如果你没有操作步骤二的数据当然你可以完全忽略步骤而, 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取但都过去的主题
+
 ```
 override方法实现：
 ```swift
@@ -161,36 +188,55 @@ override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
      ...
 }
 override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
-    // if false return ch_switchTheme:pre will not called
+    // 如果返回false, ch_switchTheme:pre 不会被调用
     return true
 }
 ```
 参数说明：
-* now: 你切换主题是传递进来的参数，比如是白天，还是黑夜等待。下面第二步提到你传递进来的数据UIApplication.ch_switchTheme(yourdata)
+* now: 你切换主题是传递进来的参数，比如是白天，还是黑夜等待。你可以用 ThemeSwitchHelper<你定义的主题类型>.parseTheme(now),获取当前的主题
 * pre: 上次你主题切换使用的参数
 好了，通过上面的步骤你已经使得你的view可以支持多种主题了
 
+
+### Useful Helper Function
+Some useful function define in ThemeSwitchHelper.
+* 获取当前的主题: ThemeSwitchHelper<你定义的主题类型>.currentTheme
+* 解析参数获取当前主题: ThemeSwitchHelper<你定义的主题类型>.parseTheme()
+* 当前主题的图片: ThemeSwitchHelper<你定义的主题类型>.image()
+* 当前主题的颜色: ThemeSwitchHelper<你定义的主题类型>.color()
+* 当前主题的配置（如果图片,颜色不满足你的需求,你可以使用这个）: ThemeSwitchHelper<你定义的主题类型>.currentThemeData()
+
+
+
 ### 第二步: 设置的主题数据
-* Switch whole application theme
+* 设置整个app
 ``` swift
-    ThemeSwitchMananger.instance.themeData = "your theme data"
+    UIApplication.ch_switchTheme(ThemeStyle.Night)
 ```
+* 设置单个view和subview
+``` swift
+    viewInstance.ch_switchTheme(ThemeStyle.Night)
+ ```
+* 设置单个 view controller 和其子 view controller
+``` swift
+    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
+ ```
 
 ### 第三步：切换主题，皮肤
 你只需要调用一个方法就可以实现
 ```swift
-    UIApplication.ch_switchTheme(yourdata)
+    UIApplication.ch_switchTheme(ThemeStyle.Night)
 ```
 
 
 当然，你可以选择行的修改你想要改变view / view controller 的主题
 view 切换调用:
 ```swift
-    viewInstance.ch_switchTheme(yourdata)
+    viewInstance.ch_switchTheme(ThemeStyle.Night)
 ```
 view controller 调用:
 ```swift
-    viewControllerInstance.ch_switchTheme(yourdata)
+    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
 ```
 
 

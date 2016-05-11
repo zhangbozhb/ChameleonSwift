@@ -22,17 +22,15 @@ class SecondViewController: UIViewController {
     }
     
     override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
-        if let a = now as? String, b = pre as? String where a != b{
+        if let a = ThemeSwitchHelper<ColorName>.parseTheme(now) , b = ThemeSwitchHelper<ColorName>.parseTheme(pre) where a != b {
             return false
         }
         return true
     }
     
     override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-        if let now = now, value = now as? String {
-            if let color = ColorName(rawValue: value) {
-                self.view.backgroundColor = UIColor.colorWithHexString(color.rawValue)
-            }
+        if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+            view.backgroundColor = UIColor.colorWithHexString(now.rawValue)
         }
     }
     
