@@ -475,7 +475,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    func ch_switchTheme<T>(data: T? = nil) {
+    func ch_switchTheme<T>(data: T) {
         ThemeService.instance.switchTheme(data)
     }
     /**
@@ -483,7 +483,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    class func ch_switchTheme<T>(data: T? = nil) {
+    class func ch_switchTheme<T>(data: T) {
         ThemeService.instance.switchTheme(data)
     }
 }
