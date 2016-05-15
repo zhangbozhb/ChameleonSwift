@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+
+// MARK: Data defined
 public class ThemeDataWraper<T> {
     var value :T?
     init(value:T?) {
@@ -16,7 +18,7 @@ public class ThemeDataWraper<T> {
     }
 }
 
-class WeakRef<T: AnyObject> {
+public class WeakRef<T: AnyObject> {
     weak var value : T?
     init (value: T) {
         self.value = value
@@ -55,7 +57,7 @@ private class ThemeSwitchData {
     }
 }
 
-internal class ThemeSwitchDataCenter {
+private class ThemeSwitchDataCenter {
     private var switchData:ThemeSwitchData!
     private var hasInited = false
     
@@ -104,7 +106,7 @@ private class ThemeSwitchInternalConf {
     }
 }
 
-
+// MARK: View /View controller Switch extension
 private var kThemeLastSwitchKey: Void?
 private var kThemeSwitchBlockKey: Void?
 private var kThemeSwitchInternalConfigKey: Void?
@@ -404,7 +406,7 @@ public extension UIViewController {
     }
 }
 
-
+// MARK: ThemeService
 public var kChThemeSwitchNotification = "kChThemeSwitchNotification"
 private class ThemeService {
     private var viewControllers = [WeakRef<UIViewController>]()
@@ -485,5 +487,205 @@ public extension UIApplication {
      */
     class func ch_switchTheme<T>(data: T) {
         ThemeService.instance.switchTheme(data)
+    }
+}
+
+
+
+// MARK: swizzle extension
+public extension NSObject {
+    class func ch_swizzledMethod(originalSelector:Selector, swizzledSelector:Selector) {
+        let originalMethod = class_getInstanceMethod(self, originalSelector)
+        let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
+        
+        let didAddMethod = class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+        
+        if didAddMethod {
+            class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
+        } else {
+            method_exchangeImplementations(originalMethod, swizzledMethod)
+        }
+    }
+}
+
+// MARK: config
+private enum ThemeSwizzledType: Int {
+    case UIViewAwakeFromNib
+    case UIViewDidMoveToWindow
+    case UIViewControllerAwakeFromNib
+    case UIViewControllerViewWillAppear
+}
+
+public class ThemeServiceConfig {
+    private init() {
+    }
+    
+    // view config
+    public var viewAutoSwitchThemeAfterAwakeFromNib = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    public var viewAutoSwitchThemeAfterMovedToWindow = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    // view controller config
+    public var viewControllerAutoSwitchThemeAfterAwakeFromNib = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    public var viewControllerAutoSwitchThemeWhenViewWillAppear = false {
+        didSet {
+            swizzledWithConfig()
+        }
+    }
+    
+    public static let instance = ThemeServiceConfig()
+    
+    /**
+     init theme data
+     be awared: this method should call once
+     
+     - parameter data: theme
+     
+     - returns: void
+     */
+    func initThemeData<T>(data data:T) {
+        ThemeSwitchDataCenter.initThemeData(data)
+    }
+    
+    private var swizzledRecords:[ThemeSwizzledType: Bool] = [:]
+    private func swizzledWithConfig() {
+        if let _ = swizzledRecords[.UIViewAwakeFromNib] {
+        } else if viewAutoSwitchThemeAfterAwakeFromNib {
+            UIView.ch_swizzledMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+            swizzledRecords[.UIViewAwakeFromNib] = true
+        }
+        if let _ = swizzledRecords[.UIViewDidMoveToWindow] {
+        } else if viewAutoSwitchThemeAfterMovedToWindow {
+            UIView.ch_swizzledMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
+            swizzledRecords[.UIViewDidMoveToWindow] = true
+        }
+        
+        if let _ = swizzledRecords[.UIViewControllerAwakeFromNib] {
+        } else if viewControllerAutoSwitchThemeAfterAwakeFromNib {
+            UIViewController.ch_swizzledMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
+            swizzledRecords[.UIViewControllerAwakeFromNib] = true
+        }
+        if let _ = swizzledRecords[.UIViewControllerViewWillAppear] {
+        } else if viewControllerAutoSwitchThemeWhenViewWillAppear {
+            UIViewController.ch_swizzledMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
+            swizzledRecords[.UIViewControllerViewWillAppear] = true
+        }
+    }
+}
+
+public extension UIView {
+    private var ch_themeServiceConfig:ThemeServiceConfig {
+        return ThemeServiceConfig.instance
+    }
+    
+    func ch_awakeFromNib() {
+        ch_awakeFromNib()
+        if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
+            ch_switchThemeSelfInit()
+        }
+    }
+    
+    func ch_didMoveToWindow() {
+        ch_didMoveToWindow()
+        if let _ = window where ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToWindow {
+            ch_switchThemeSelfOnly()
+        }
+    }
+}
+
+public extension UIViewController {
+    private var ch_themeServiceConfig:ThemeServiceConfig {
+        return ThemeServiceConfig.instance
+    }
+    
+    func ch_awakeFromNib() {
+        ch_awakeFromNib()
+        if ch_themeServiceConfig.viewControllerAutoSwitchThemeAfterAwakeFromNib {
+            ch_switchThemeSelfInit()
+        }
+    }
+    
+    func ch_viewWillAppear(animated: Bool) {
+        ch_viewWillAppear(animated)
+        if ch_themeServiceConfig.viewControllerAutoSwitchThemeWhenViewWillAppear {
+            ch_switchThemeSelfOnly()
+        }
+    }
+}
+
+
+// MARK: Helper functions
+/// theme helper
+public class ThemeSwitchHelper<T where T: Hashable> {
+    
+    /**
+     get current theme
+     
+     - returns: current theme
+     */
+    final class func currentTheme() -> T? {
+        return ThemeSwitchDataCenter.themeData()
+    }
+    
+    /**
+     get current theme data
+     
+     - parameter data: theme data config for themes
+     - parameter d:    default value if theme value for current thme is not in input data
+     
+     - returns: current theme value
+     */
+    final class func currentThemeData<D> (data:[T: D], d:D? = nil) -> D? {
+        if let s = self.currentTheme() {
+            return data[s]
+        }
+        return d
+    }
+    
+    /**
+     use parse theme from data
+     this func used in ch_shouldSwitchTheme(_:pre:), ch_switchTheme(_:pre:), notificaiton (useinfo["data"])
+     
+     - parameter data: data to parse
+     
+     - returns: theme
+     */
+    final class func parseTheme(data:AnyObject?) -> T? {
+        if let d = data as? ThemeDataWraper<T> {
+            return d.value
+        }
+        return nil
+    }
+    
+    /**
+     get current theme image
+     
+     - parameter images: theme image config
+     
+     - returns: image
+     */
+    public class func image(images:[T: UIImage]) -> UIImage? {
+        return self.currentThemeData(images)
+    }
+    
+    /**
+     get current theme color
+     
+     - parameter colors: theme color config
+     
+     - returns: color
+     */
+    public class func color(colors:[T: UIColor]) -> UIColor? {
+        return self.currentThemeData(colors)
     }
 }
