@@ -178,13 +178,12 @@ label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
         ...
     }
 }
-* 注意: now 这个数据可能会空,如果你没有操作步骤二的数据当然你可以完全忽略步骤而, 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取但都过去的主题
-
 ```
+* 注意: now 这个数据可能会空,如果你没有操作步骤二的数据当然你可以完全忽略步骤而, 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取当前的主题
 override方法实现：
 ```swift
 override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
-    // your code change theme/skin
+    // 你修改主题的代码
      ...
 }
 override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
@@ -198,20 +197,10 @@ override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
 好了，通过上面的步骤你已经使得你的view可以支持多种主题了
 
 
-### Useful Helper Function
-Some useful function define in ThemeSwitchHelper.
-* 获取当前的主题: ThemeSwitchHelper<你定义的主题类型>.currentTheme
-* 解析参数获取当前主题: ThemeSwitchHelper<你定义的主题类型>.parseTheme()
-* 当前主题的图片: ThemeSwitchHelper<你定义的主题类型>.image()
-* 当前主题的颜色: ThemeSwitchHelper<你定义的主题类型>.color()
-* 当前主题的配置（如果图片,颜色不满足你的需求,你可以使用这个）: ThemeSwitchHelper<你定义的主题类型>.currentThemeData()
-
-
-
 ### 第二步: 设置的主题数据
 * 设置整个app
 ``` swift
-    UIApplication.ch_switchTheme(ThemeStyle.Night)
+    ThemeServiceConfig.instance.initThemeData(data: ThemeStyle.Day)
 ```
 * 设置单个view和subview
 ``` swift
@@ -238,6 +227,15 @@ view controller 调用:
 ```swift
     viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
 ```
+
+
+## 有用的帮助函数
+ThemeSwitchHelper定义了一些有用的函数
+* 获取当前的主题: ThemeSwitchHelper<你定义的主题类型>.currentTheme
+* 解析参数获取当前主题: ThemeSwitchHelper<你定义的主题类型>.parseTheme()
+* 当前主题的图片: ThemeSwitchHelper<你定义的主题类型>.image()
+* 当前主题的颜色: ThemeSwitchHelper<你定义的主题类型>.color()
+* 当前主题的配置（如果图片,颜色不满足你的需求,你可以使用这个）: ThemeSwitchHelper<你定义的主题类型>.currentThemeData()
 
 
 ## 高级使用：
@@ -277,6 +275,3 @@ viewControllerInstance.ch_registerViewController() 这个方法在绝大多数�
 
 ### 广告
 本库已经在某新闻 App 中使用，经得住考验~
-
-
-
