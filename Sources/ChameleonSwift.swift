@@ -30,12 +30,10 @@ public enum ThemeStyle: Int {
 }
 
 private class ThemeSwitchData {
-    var lastTimestamp:Int64 = 0
     var lastSignature:String!
     var extData:AnyObject!
     
     init<T>(data:T?) {
-        lastTimestamp = Int64(NSDate().timeIntervalSince1970 * 1000)
         lastSignature = NSUUID.init().UUIDString
         extData = ThemeDataWraper.init(value: data)
     }
@@ -172,9 +170,6 @@ public extension UIView {
         guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
             return
         }
-        guard ch_shouldSwitchTheme(data?.extData, pre: preData?.extData) else {
-            return
-        }
         // save switch data
         ch_themeSwitchData = data
         
@@ -183,19 +178,6 @@ public extension UIView {
         
         // call switch theme block
         ch_switchThemeBlock?(now:data?.extData, pre:preData?.extData)
-    }
-    
-    /**
-     Specifies whether the view should change theme.
-     true if the status bar should be hidden or false if it should be shown
-     
-     - parameter now: the data you switch theme
-     - parameter pre: the old data you switch theme
-     
-     - returns: true switch theme will happen, or false ignore switch theme
-     */
-    public func ch_shouldSwitchTheme(now:AnyObject?, pre:AnyObject?) -> Bool {
-        return true
     }
     
     /**
@@ -312,9 +294,6 @@ public extension UIViewController {
         guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
             return
         }
-        guard ch_shouldSwitchTheme(data?.extData, pre: preData?.extData) else {
-            return
-        }
         // save switch data
         ch_themeSwitchData = data
         
@@ -326,19 +305,6 @@ public extension UIViewController {
         
         // update status bar
         setNeedsStatusBarAppearanceUpdate()
-    }
-    
-    /**
-     Specifies whether the view controller should change theme.
-     true if the status bar should be hidden or false if it should be shown
-     
-     - parameter now: the data you switch theme
-     - parameter pre: the old data you switch theme
-     
-     - returns: true switch theme will happen, or false ignore switch theme
-     */
-    public func ch_shouldSwitchTheme(now:AnyObject?, pre:AnyObject?) -> Bool {
-        return true
     }
     
     /**
@@ -654,7 +620,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
     
     /**
      use parse theme from data
-     this func used in ch_shouldSwitchTheme(_:pre:), ch_switchTheme(_:pre:), notificaiton (useinfo["data"])
+     this func used in ch_switchTheme(_:pre:), notificaiton (useinfo["data"])
      
      - parameter data: data to parse
      

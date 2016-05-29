@@ -35,14 +35,6 @@ class CustomerView2:UILabel {
         super.init(frame: frame)
     }
     
-    
-    override func ch_shouldSwitchTheme(now: AnyObject?, pre: AnyObject?) -> Bool {
-        if let a = ThemeSwitchHelper<ColorName>.parseTheme(now) where a == .AndroidGree || a == .AntiqueBras {
-            return false
-        }
-        return true
-    }
-    
     override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             text = "\(now) no AndroidGree AntiqueBras"
