@@ -44,10 +44,6 @@ override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
         ...
     }
 }
-override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
-    // if false return ch_switchTheme:pre will not called
-    return true 
-}
 ```
 * now: data that you pass to switchTheme. your can use ThemeSwitchHelper<ThemeStyle>.parseTheme(now) get your real theme data
 * pre: previous data that you pass to switchTheme
@@ -185,10 +181,6 @@ override方法实现：
 override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
     // 你修改主题的代码
      ...
-}
-override func ch_shouldSwitchTheme(now:AnyObject?, pre: AnyObject?) -> Bool {
-    // 如果返回false, ch_switchTheme:pre 不会被调用
-    return true
 }
 ```
 参数说明：
