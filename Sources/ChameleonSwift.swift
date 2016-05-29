@@ -432,7 +432,7 @@ public extension UIViewController {
      force view controller enable switch theme/skin
      Note: you call method if parentViewController is nil, normally you ignore it
      */
-    func ch_registerViewController() {
+    public final func ch_registerViewController() {
         ThemeService.instance.registerViewController(self)
     }
 }
@@ -443,7 +443,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    func ch_switchTheme<T>(data: T) {
+    public final func ch_switchTheme<T>(data: T) {
         ThemeService.instance.switchTheme(data)
     }
     /**
@@ -451,7 +451,7 @@ public extension UIApplication {
      
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
-    class func ch_switchTheme<T>(data: T) {
+    public final class func ch_switchTheme<T>(data: T) {
         ThemeService.instance.switchTheme(data)
     }
 }
@@ -460,7 +460,7 @@ public extension UIApplication {
 
 // MARK: swizzle extension
 public extension NSObject {
-    class func ch_swizzledMethod(originalSelector:Selector, swizzledSelector:Selector) {
+    public class func ch_swizzledMethod(originalSelector:Selector, swizzledSelector:Selector) {
         let originalMethod = class_getInstanceMethod(self, originalSelector)
         let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
         
@@ -519,7 +519,7 @@ public class ThemeServiceConfig {
      
      - returns: void
      */
-    func initThemeData<T>(data data:T) {
+    public func initThemeData<T>(data data:T) {
         ThemeSwitchDataCenter.initThemeData(data)
     }
     
@@ -599,7 +599,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
      
      - returns: current theme
      */
-    final class func currentTheme() -> T? {
+    public final class func currentTheme() -> T? {
         return ThemeSwitchDataCenter.themeData()
     }
     
@@ -611,7 +611,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
      
      - returns: current theme value
      */
-    final class func currentThemeData<D> (data:[T: D], d:D? = nil) -> D? {
+    public final class func currentThemeData<D> (data:[T: D], d:D? = nil) -> D? {
         if let s = self.currentTheme() {
             return data[s]
         }
@@ -626,7 +626,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
      
      - returns: theme
      */
-    final class func parseTheme(data:AnyObject?) -> T? {
+    public final class func parseTheme(data:AnyObject?) -> T? {
         if let d = data as? ThemeDataWraper<T> {
             return d.value
         }
@@ -640,7 +640,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
      
      - returns: image
      */
-    public class func image(images:[T: UIImage]) -> UIImage? {
+    public final class func image(images:[T: UIImage]) -> UIImage? {
         return self.currentThemeData(images)
     }
     
@@ -651,7 +651,7 @@ public class ThemeSwitchHelper<T where T: Hashable> {
      
      - returns: color
      */
-    public class func color(colors:[T: UIColor]) -> UIColor? {
+    public final class func color(colors:[T: UIColor]) -> UIColor? {
         return self.currentThemeData(colors)
     }
 }
