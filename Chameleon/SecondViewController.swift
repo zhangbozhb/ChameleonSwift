@@ -21,7 +21,7 @@ class SecondViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             view.backgroundColor = UIColor.colorWithHexString(now.rawValue)
         }
@@ -58,7 +58,7 @@ class ThirdViewController:UIViewController {
         view.backgroundColor = UIColor.yellowColor()
     }
     
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
         print("ThirdViewController ch_switchTheme \(NSStringFromClass(self.dynamicType))")
     }
@@ -70,14 +70,14 @@ class ForthViewController:ThirdViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.purpleColor()
     }
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
         print("ForthViewController ch_switchTheme \(NSStringFromClass(self.dynamicType))")
     }
 }
 
 class View1:UIView {
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
         print("View1 ch_switchTheme \(NSStringFromClass(self.dynamicType))")
     }
@@ -85,7 +85,7 @@ class View1:UIView {
 
 
 class View2:View1 {
-    override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
         print("View2 ch_switchTheme \(NSStringFromClass(self.dynamicType))")
     }

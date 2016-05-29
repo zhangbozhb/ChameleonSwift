@@ -28,7 +28,7 @@ You can define you theme with any data. Let's assume you theme data is ThemeStyl
 **1**, Enable view to switch theme ability:
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
     // your code change theme/skin
     if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) { // get your ThemeStyle from now
         label.text = "\(now)"
@@ -38,7 +38,7 @@ label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
 ```
 Or your can override method of view: ch_switchTheme:pre
 ```swift
-override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
     // your code change theme/skin
     if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) {
         ...
@@ -167,7 +167,7 @@ ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具
 
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
     // 你修改主题的代码
     if let now = ThemeSwitchHelper<你定义的主题类型>.parseTheme(now) { // 获取 真正的主题
         label.text = "\(now)"
@@ -178,7 +178,7 @@ label.ch_switchThemeBlock = { (now:AnyObject?, pre:AnyObject?) -> Void in
 * 注意: now 这个数据可能会空,如果你没有操作步骤二的数据当然你可以完全忽略步骤而, 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取当前的主题
 override方法实现：
 ```swift
-override func ch_switchTheme(now: AnyObject?, pre: AnyObject?) {
+override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
     // 你修改主题的代码
      ...
 }
