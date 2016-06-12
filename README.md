@@ -11,7 +11,7 @@
 
 A lightweight and pure Swift implemented library for switch app theme/skin. Chameleon aim at provide easy way to enable to app switch theme
 
-If your have any quesion, you can email me(zhangbozhb@gmail.com) or leave message.
+If your have any question, you can email me(zhangbozhb@gmail.com) or leave message.
 
 ## Requirements
 
@@ -81,7 +81,7 @@ Some useful function define in ThemeSwitchHelper.
 
 ### Advance usage
 
-* 1, Config switch theme
+* 1, Auto callback config
     To save your time, ThemeServiceConfig may be your favor.
     Several properties are pre defined for you. When specified property is true, ch_ch_switchTheme(_:) user it's parent data
 
@@ -93,16 +93,23 @@ Some useful function define in ThemeSwitchHelper.
         tsc.viewControllerAutoSwitchThemeAfterAwakeFromNib = false
         tsc.viewControllerAutoSwitchThemeWhenViewWillAppear = true
     ```
-    **Note**: Be wared you should promise you method ch_switchTheme(_:pre:) and ch_switchThemeBlock run without exceptions. If unfortunately it happend, you app will crash.
+    
+    **Note**: Auto call is convenient and save your time, but you should follow some rules, or else you may be in trouble.
+    
+    * No Crash: Be aware you should promise you method ch_switchTheme(_:pre:) and ch_switchThemeBlock run without exceptions. If unfortunately it happened, you app will crash.
+    * Save your status: You should save you status aware in some place, and theme switch method should status aware. since callback is automatic, if you theme or you appearance is status related, it may work not properly. For example, you has a button which theme is status related. Its background is black in Day, white in Night, and red if it selected; if you have never save your selection status or theme switch ignored selection status, auto callback will not work properly.
 
-* 2, What happened when both ch_switchTheme(_:pre:) and ch_switchThemeBlock are defined?
 
-    Both of them will be called, and ch_switchThemeBlock run after ch_switchTheme(_:pre:)
+* 2, Call orders:
+    * order between parent and child(view/subviews, view controller/ child view controller): child will call before parent;
+    * ch_switchTheme(_:pre:) and ch_switchThemeBlock: if both defined, ch_switchTheme(_:pre:) run before switchThemeBlock;
+    * view, view controller: if your app switch theme, view theme switch related method run before view controller. If you change one view theme in both view and view controller, changes in view controller will take effect.
+    
+    **Note**:
+    * View and View controller work separately. if you call ch_switchTheme in view controller, its view theme switch method will not run.
 
-* 3, What happened when you change cheme in view and viewController?
-    Yes, Both of them will be called, and viewController's switch theme method run after view done.
 
-* 4, You may find your switch theme method not call when you view controller is beyong applicaiton rootViewController tree. In this case, you normal is call ch_registerViewController()
+* 4, You may find your switch theme method not call when you view controller is beyond application rootViewController tree. In this case, you normal is call ch_registerViewController()
     ```
     viewControllerInstance.ch_registerViewController()
     ```
@@ -175,7 +182,7 @@ label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
     }
 }
 ```
-* 注意: now 这个数据可能会空,如果你没有操作步骤二的数据当然你可以完全忽略步骤而, 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取当前的主题
+* 注意: now 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取当前的主题（后面步骤二传入的参数）
 override方法实现：
 ```swift
 override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
