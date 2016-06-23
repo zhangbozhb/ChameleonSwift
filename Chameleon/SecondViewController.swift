@@ -50,6 +50,10 @@ class SecondViewController: UIViewController {
     @IBAction func showForth(sender: AnyObject) {
         navigationController?.pushViewController(ForthViewController(), animated: false)
     }
+    
+    @IBAction func refreshCurrentView(sender: AnyObject) {
+        view.ch_switchTheme(refresh: true)
+    }
 }
 
 class ThirdViewController:UIViewController {
@@ -79,7 +83,7 @@ class ForthViewController:ThirdViewController {
 class View1:UIView {
     override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
-        print("View1 ch_switchTheme \(NSStringFromClass(self.dynamicType))")
+        print("View1 ch_switchTheme \(NSStringFromClass(self.dynamicType)) data:\(ThemeSwitchHelper<ColorName>.parseTheme(now))")
     }
 }
 
@@ -87,7 +91,7 @@ class View1:UIView {
 class View2:View1 {
     override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
         super.ch_switchTheme(now, pre: pre)
-        print("View2 ch_switchTheme \(NSStringFromClass(self.dynamicType))")
+        print("View2 ch_switchTheme \(NSStringFromClass(self.dynamicType)) data:\(ThemeSwitchHelper<ColorName>.parseTheme(now))")
     }
 }
 

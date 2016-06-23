@@ -33,6 +33,10 @@ private class ThemeSwitchData {
     var lastSignature:String!
     var extData:AnyObject!
     
+    private init(){
+        lastSignature = NSUUID.init().UUIDString
+    }
+    
     init<T>(data:T?) {
         lastSignature = NSUUID.init().UUIDString
         extData = ThemeDataWraper.init(value: data)
@@ -55,6 +59,14 @@ private class ThemeSwitchData {
     }
 }
 
+extension ThemeSwitchData {
+    func copyWithExtData() -> ThemeSwitchData {
+        let copy = ThemeSwitchData()
+        copy.extData = extData
+        return copy
+    }
+}
+
 private func kThemeInitChecking() {
     if !ThemeSwitchDataCenter.instance.hasInited {
         print("Warning: ThemeServiceConfig has not initThemeData")
@@ -68,7 +80,7 @@ private class ThemeSwitchDataCenter {
         switchData = ThemeSwitchData.init(data: data)
     }
 
-    private static let instance = ThemeSwitchDataCenter.init(data: ThemeSwitchData.init(data:  ThemeStyle.Day)) // here defined a wrapper type as default data(is invalid data)
+    private static let instance = ThemeSwitchDataCenter.init(data: ThemeSwitchData.init(data: ThemeStyle.Day)) // here defined a wrapper type as default data(is invalid data)
     
     class func initThemeData<T>(obj: T?) {
         if !self.instance.hasInited {
@@ -224,7 +236,7 @@ public extension UIView {
         ch_themeSwitchInternalConf.recursion = true
         if let data = ch_themeSwitchData {
             if refresh {
-                ch_switchThemeWrapper(ThemeSwitchData.init(data: data.extData?.data))
+                ch_switchThemeWrapper(data.copyWithExtData())
             } else {
                 ch_switchThemeWrapper(data)
             }
@@ -357,7 +369,7 @@ public extension UIViewController {
         ch_themeSwitchInternalConf.recursion = true
         if let data = ch_themeSwitchData {
             if refresh {
-                ch_switchThemeWrapper(ThemeSwitchData.init(data: data.extData?.data))
+                ch_switchThemeWrapper(data.copyWithExtData())
             } else {
                 ch_switchThemeWrapper(data)
             }

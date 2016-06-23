@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -124,13 +124,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Second View" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="zEq-FU-wV5">
-                                <rect key="frame" x="195" y="279" width="210" height="42"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DUK-tb-WoY">
                                 <rect key="frame" x="69" y="110" width="46" height="30"/>
                                 <state key="normal" title="1V"/>
@@ -166,6 +159,16 @@
                                     <constraint firstAttribute="height" constant="190" id="vWd-TL-5sq"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QS1-hQ-n4v">
+                                <rect key="frame" x="69" y="206" width="139" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="E6c-Iy-dXH"/>
+                                </constraints>
+                                <state key="normal" title="CurrentView"/>
+                                <connections>
+                                    <action selector="refreshCurrentView:" destination="8rJ-Kc-sve" eventType="touchDragInside" id="IFf-UY-bPL"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -174,13 +177,14 @@
                             <constraint firstItem="ykd-VW-BRw" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" id="RaU-sg-48I"/>
                             <constraint firstItem="mto-kN-VjA" firstAttribute="top" secondItem="DUK-tb-WoY" secondAttribute="bottom" constant="20" id="ckR-tA-YI0"/>
                             <constraint firstAttribute="trailing" secondItem="ykd-VW-BRw" secondAttribute="trailing" id="dAM-6t-rrp"/>
+                            <constraint firstItem="QS1-hQ-n4v" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="69" id="dSX-nX-1DS"/>
                             <constraint firstItem="zEy-ZH-Mxy" firstAttribute="leading" secondItem="DUK-tb-WoY" secondAttribute="trailing" constant="47" id="fFO-1T-Wbw"/>
                             <constraint firstItem="zEy-ZH-Mxy" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" constant="46" id="fi4-tl-0dg"/>
+                            <constraint firstItem="QS1-hQ-n4v" firstAttribute="top" secondItem="mMb-cD-G3A" secondAttribute="bottom" constant="16" id="iW6-Wv-2KS"/>
                             <constraint firstItem="DUK-tb-WoY" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="69" id="iiI-FP-BUj"/>
                             <constraint firstItem="mMb-cD-G3A" firstAttribute="leading" secondItem="mto-kN-VjA" secondAttribute="trailing" constant="47" id="kjQ-m7-P80"/>
                             <constraint firstItem="DUK-tb-WoY" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" constant="46" id="lwY-0h-Nxd"/>
-                            <constraint firstAttribute="centerX" secondItem="zEq-FU-wV5" secondAttribute="centerX" id="qqM-NS-xev"/>
-                            <constraint firstAttribute="centerY" secondItem="zEq-FU-wV5" secondAttribute="centerY" id="qzY-Ky-pLD"/>
+                            <constraint firstItem="ykd-VW-BRw" firstAttribute="leading" secondItem="QS1-hQ-n4v" secondAttribute="trailing" constant="23" id="qWq-Cq-N0Y"/>
                             <constraint firstItem="mMb-cD-G3A" firstAttribute="top" secondItem="zEy-ZH-Mxy" secondAttribute="bottom" constant="20" id="w6S-wP-CjN"/>
                         </constraints>
                     </view>
