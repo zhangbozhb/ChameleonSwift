@@ -101,7 +101,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
             cell.backgroundColor = UIColor.colorWithHexString(hexString: datas[row].rawValue)
         }
         
-        UIApplication.ch_switchTheme(datas[row])
+        UIApplication.ch_switchTheme(data: datas[row])
     }
 }
 
