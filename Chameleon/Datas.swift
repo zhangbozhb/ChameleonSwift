@@ -39,21 +39,20 @@ public extension UIColor {
         let blue = hex & 0xFF
         let green = (hex >> 8) & 0xFF
         let red = (hex >> 16) & 0xFF
-        return self.colorWithRGB(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
+        return self.colorWithRGB(CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
     }
     
     public class func colorWithHexString(hexString: String, alpha: Float = 1.0) -> UIColor {
-        var hexStr = hexString.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines).uppercased()
+        var hexStr = hexString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).uppercaseString
         if (hexStr.hasPrefix("#")) {
-            hexStr = (hexStr as NSString).substring(from: 1)
+            hexStr = (hexStr as NSString).substringFromIndex(1)
         }
         var hex:CUnsignedInt = 0
-        Scanner.init(string: hexStr).scanHexInt32(&hex)
-        
+        NSScanner.init(string: hexStr).scanHexInt(&hex)
         
         let blue = hex & 0xFF
         let green = (hex >> 8) & 0xFF
         let red = (hex >> 16) & 0xFF
-        return self.colorWithRGB(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
+        return self.colorWithRGB(CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
     }
 }

@@ -13,9 +13,28 @@
 		ED8426331C9D364C0083A161 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED8426311C9D364C0083A161 /* Main.storyboard */; };
 		ED8426351C9D364C0083A161 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED8426341C9D364C0083A161 /* Assets.xcassets */; };
 		ED8426381C9D364C0083A161 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED8426361C9D364C0083A161 /* LaunchScreen.storyboard */; };
+		ED8426431C9D364C0083A161 /* ChameleonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426421C9D364C0083A161 /* ChameleonTests.swift */; };
+		ED84264E1C9D364C0083A161 /* ChameleonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */; };
 		ED84266A1C9D63CC0083A161 /* ChameleonSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8426691C9D63CC0083A161 /* ChameleonSwift.swift */; };
 		EDBA43C01CA12E2B0016283E /* Datas.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDBA43BF1CA12E2B0016283E /* Datas.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ED84263F1C9D364C0083A161 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED8426201C9D364C0083A161 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED8426271C9D364C0083A161;
+			remoteInfo = Chameleon;
+		};
+		ED84264A1C9D364C0083A161 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED8426201C9D364C0083A161 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED8426271C9D364C0083A161;
+			remoteInfo = Chameleon;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		ED8426281C9D364C0083A161 /* ChameleonSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChameleonSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,12 +45,32 @@
 		ED8426341C9D364C0083A161 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED8426371C9D364C0083A161 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED8426391C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED84263E1C9D364C0083A161 /* ChameleonSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChameleonSwift.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED8426421C9D364C0083A161 /* ChameleonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChameleonTests.swift; sourceTree = "<group>"; };
+		ED8426441C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED8426491C9D364C0083A161 /* ChameleonSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChameleonSwift.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChameleonUITests.swift; sourceTree = "<group>"; };
+		ED84264F1C9D364C0083A161 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED8426691C9D63CC0083A161 /* ChameleonSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChameleonSwift.swift; sourceTree = "<group>"; };
 		EDBA43BF1CA12E2B0016283E /* Datas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Datas.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		ED8426251C9D364C0083A161 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED84263B1C9D364C0083A161 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED8426461C9D364C0083A161 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +85,8 @@
 			children = (
 				ED8426681C9D63CC0083A161 /* Sources */,
 				ED84262A1C9D364C0083A161 /* Chameleon */,
+				ED8426411C9D364C0083A161 /* ChameleonTests */,
+				ED84264C1C9D364C0083A161 /* ChameleonUITests */,
 				ED8426291C9D364C0083A161 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +95,8 @@
 			isa = PBXGroup;
 			children = (
 				ED8426281C9D364C0083A161 /* ChameleonSwift.app */,
+				ED84263E1C9D364C0083A161 /* ChameleonSwift.xctest */,
+				ED8426491C9D364C0083A161 /* ChameleonSwift.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -71,6 +114,24 @@
 				EDBA43BF1CA12E2B0016283E /* Datas.swift */,
 			);
 			path = Chameleon;
+			sourceTree = "<group>";
+		};
+		ED8426411C9D364C0083A161 /* ChameleonTests */ = {
+			isa = PBXGroup;
+			children = (
+				ED8426421C9D364C0083A161 /* ChameleonTests.swift */,
+				ED8426441C9D364C0083A161 /* Info.plist */,
+			);
+			path = ChameleonTests;
+			sourceTree = "<group>";
+		};
+		ED84264C1C9D364C0083A161 /* ChameleonUITests */ = {
+			isa = PBXGroup;
+			children = (
+				ED84264D1C9D364C0083A161 /* ChameleonUITests.swift */,
+				ED84264F1C9D364C0083A161 /* Info.plist */,
+			);
+			path = ChameleonUITests;
 			sourceTree = "<group>";
 		};
 		ED8426681C9D63CC0083A161 /* Sources */ = {
@@ -101,6 +162,42 @@
 			productReference = ED8426281C9D364C0083A161 /* ChameleonSwift.app */;
 			productType = "com.apple.product-type.application";
 		};
+		ED84263D1C9D364C0083A161 /* ChameleonSwiftTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED8426551C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonSwiftTests" */;
+			buildPhases = (
+				ED84263A1C9D364C0083A161 /* Sources */,
+				ED84263B1C9D364C0083A161 /* Frameworks */,
+				ED84263C1C9D364C0083A161 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED8426401C9D364C0083A161 /* PBXTargetDependency */,
+			);
+			name = ChameleonSwiftTests;
+			productName = ChameleonTests;
+			productReference = ED84263E1C9D364C0083A161 /* ChameleonSwift.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ED8426481C9D364C0083A161 /* ChameleonSwiftUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED8426581C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonSwiftUITests" */;
+			buildPhases = (
+				ED8426451C9D364C0083A161 /* Sources */,
+				ED8426461C9D364C0083A161 /* Frameworks */,
+				ED8426471C9D364C0083A161 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED84264B1C9D364C0083A161 /* PBXTargetDependency */,
+			);
+			name = ChameleonSwiftUITests;
+			productName = ChameleonUITests;
+			productReference = ED8426491C9D364C0083A161 /* ChameleonSwift.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -108,13 +205,19 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = travel;
 				TargetAttributes = {
 					ED8426271C9D364C0083A161 = {
 						CreatedOnToolsVersion = 7.2.1;
-						DevelopmentTeam = HNF3479B3Z;
-						LastSwiftMigration = 0800;
+					};
+					ED84263D1C9D364C0083A161 = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = ED8426271C9D364C0083A161;
+					};
+					ED8426481C9D364C0083A161 = {
+						CreatedOnToolsVersion = 7.2.1;
+						TestTargetID = ED8426271C9D364C0083A161;
 					};
 				};
 			};
@@ -132,6 +235,8 @@
 			projectRoot = "";
 			targets = (
 				ED8426271C9D364C0083A161 /* ChameleonSwift */,
+				ED84263D1C9D364C0083A161 /* ChameleonSwiftTests */,
+				ED8426481C9D364C0083A161 /* ChameleonSwiftUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -144,6 +249,20 @@
 				ED8426381C9D364C0083A161 /* LaunchScreen.storyboard in Resources */,
 				ED8426351C9D364C0083A161 /* Assets.xcassets in Resources */,
 				ED8426331C9D364C0083A161 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED84263C1C9D364C0083A161 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED8426471C9D364C0083A161 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +281,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ED84263A1C9D364C0083A161 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED8426431C9D364C0083A161 /* ChameleonTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED8426451C9D364C0083A161 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED84264E1C9D364C0083A161 /* ChameleonUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ED8426401C9D364C0083A161 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED8426271C9D364C0083A161 /* ChameleonSwift */;
+			targetProxy = ED84263F1C9D364C0083A161 /* PBXContainerItemProxy */;
+		};
+		ED84264B1C9D364C0083A161 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED8426271C9D364C0083A161 /* ChameleonSwift */;
+			targetProxy = ED84264A1C9D364C0083A161 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		ED8426311C9D364C0083A161 /* Main.storyboard */ = {
@@ -197,13 +345,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -245,13 +390,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -268,7 +410,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -278,13 +419,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = HNF3479B3Z;
 				INFOPLIST_FILE = Chameleon/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.Chameleon;
 				PRODUCT_NAME = ChameleonSwift;
-				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -292,13 +430,58 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = HNF3479B3Z;
 				INFOPLIST_FILE = Chameleon/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.Chameleon;
 				PRODUCT_NAME = ChameleonSwift;
-				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		ED8426561C9D364C0083A161 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ChameleonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.ChameleonTests;
+				PRODUCT_NAME = ChameleonSwift;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChameleonSwift.app/ChameleonSwift";
+			};
+			name = Debug;
+		};
+		ED8426571C9D364C0083A161 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = ChameleonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.ChameleonTests;
+				PRODUCT_NAME = ChameleonSwift;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ChameleonSwift.app/ChameleonSwift";
+			};
+			name = Release;
+		};
+		ED8426591C9D364C0083A161 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ChameleonUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.ChameleonUITests;
+				PRODUCT_NAME = ChameleonSwift;
+				TEST_TARGET_NAME = Chameleon;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		ED84265A1C9D364C0083A161 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = ChameleonUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.undefined.ChameleonUITests;
+				PRODUCT_NAME = ChameleonSwift;
+				TEST_TARGET_NAME = Chameleon;
+				USES_XCTRUNNER = YES;
 			};
 			name = Release;
 		};
@@ -319,6 +502,24 @@
 			buildConfigurations = (
 				ED8426531C9D364C0083A161 /* Debug */,
 				ED8426541C9D364C0083A161 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED8426551C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonSwiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED8426561C9D364C0083A161 /* Debug */,
+				ED8426571C9D364C0083A161 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED8426581C9D364C0083A161 /* Build configuration list for PBXNativeTarget "ChameleonSwiftUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED8426591C9D364C0083A161 /* Debug */,
+				ED84265A1C9D364C0083A161 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
