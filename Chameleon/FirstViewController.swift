@@ -17,7 +17,7 @@ class CustomerView1:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             text = "\(now)"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
@@ -35,7 +35,7 @@ class CustomerView2:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             text = "\(now) no AndroidGree AntiqueBras"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
@@ -68,9 +68,9 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                 self?.systemLabel.backgroundColor = UIColor.colorWithHexString(now.rawValue)
                 self?.systemLabel.text = "\(now)"
             } else {
-                let df = NSDateFormatter.init()
+                let df = DateFormatter.init()
                 df.dateFormat = "mm:ss"
-                self?.systemLabel.text = df.stringFromDate(NSDate.init()) + "\tno data in ch_switchThemeBlock"
+                self?.systemLabel.text = df.string(from: Date.init()) + "\tno data in ch_switchThemeBlock"
             }
             
         }
@@ -81,23 +81,23 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         // Dispose of any resources that can be recreated.
     }
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return datas.count
     }
     
-    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView?) -> UIView {
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let label = UILabel()
-        label.textAlignment = .Center
+        label.textAlignment = .center
         label.text = "\(datas[row])"
         return label
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if let cell = pickerView.viewForRow(row, forComponent: component) {
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if let cell = pickerView.view(forRow: row, forComponent: component) {
             cell.backgroundColor = UIColor.colorWithHexString(datas[row].rawValue)
         }
         
