@@ -21,7 +21,7 @@ class SecondViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             view.backgroundColor = UIColor.colorWithHexString(now.rawValue)
         }
@@ -62,7 +62,7 @@ class ThirdViewController:UIViewController {
         view.backgroundColor = UIColor.yellow
     }
     
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         super.ch_switchTheme(now, pre: pre)
         print("ThirdViewController ch_switchTheme \(NSStringFromClass(type(of: self)))")
     }
@@ -74,14 +74,14 @@ class ForthViewController:ThirdViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.purple
     }
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         super.ch_switchTheme(now, pre: pre)
         print("ForthViewController ch_switchTheme \(NSStringFromClass(type(of: self)))")
     }
 }
 
 class View1:UIView {
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         super.ch_switchTheme(now, pre: pre)
         print("View1 ch_switchTheme \(NSStringFromClass(type(of: self))) data:\(ThemeSwitchHelper<ColorName>.parseTheme(now))")
     }
@@ -89,7 +89,7 @@ class View1:UIView {
 
 
 class View2:View1 {
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         super.ch_switchTheme(now, pre: pre)
         print("View2 ch_switchTheme \(NSStringFromClass(type(of: self))) data:\(ThemeSwitchHelper<ColorName>.parseTheme(now))")
     }

@@ -28,7 +28,7 @@ You can define you theme with any data. Let's assume you theme data is ThemeStyl
 **1**, Enable view to switch theme ability:
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:Any, pre:Any?) -> Void in
     // your code change theme/skin
     if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) { // get your ThemeStyle from now
         label.text = "\(now)"
@@ -38,7 +38,7 @@ label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
 ```
 Or your can override method of view: ch_switchTheme:pre
 ```swift
-override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
+override func ch_switchTheme(now: Any, pre: Any?) {
     // your code change theme/skin
     if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) {
         ...
@@ -116,6 +116,9 @@ Some useful function define in ThemeSwitchHelper.
     In most cases, your do not need call this method, how ever your are free to call this method at any time
 
 
+### Swift Version:
+    default support is Swift 3. If you use it in Swift 2 you should use 1.x version.
+
 ## Installation
 
 ### CocoaPods
@@ -174,7 +177,7 @@ ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具
 
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
+label.ch_switchThemeBlock = { (now:Any, pre:Any?) -> Void in
     // 你修改主题的代码
     if let now = ThemeSwitchHelper<你定义的主题类型>.parseTheme(now) { // 获取 真正的主题
         label.text = "\(now)"
@@ -185,7 +188,7 @@ label.ch_switchThemeBlock = { (now:AnyObject, pre:AnyObject?) -> Void in
 * 注意: now 通过 ThemeSwitchHelper<你定义的主题类型>.currentTheme 获取当前的主题（后面步骤二传入的参数）
 override方法实现：
 ```swift
-override func ch_switchTheme(now: AnyObject, pre: AnyObject?) {
+override func ch_switchTheme(now: Any, pre: Any?) {
     // 你修改主题的代码
      ...
 }
@@ -227,6 +230,8 @@ view controller 调用:
     viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
 ```
 
+### Swift 版本问题
+默认支持的为Swift 3版本,如果需要在 Swift 2 版本使用, 请使用 1.x的版本
 
 ## 有用的帮助函数
 ThemeSwitchHelper定义了一些有用的函数

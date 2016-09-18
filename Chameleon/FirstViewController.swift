@@ -17,7 +17,7 @@ class CustomerView1:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             text = "\(now)"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
@@ -35,7 +35,7 @@ class CustomerView2:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(_ now: AnyObject, pre: AnyObject?) {
+    override func ch_switchTheme(_ now: Any, pre: Any?) {
         if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
             text = "\(now) no AndroidGree AntiqueBras"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
@@ -63,7 +63,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                  .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
         
-        systemLabel.ch_switchThemeBlock = { [weak self](now: AnyObject, pre: AnyObject?) -> Void in
+        systemLabel.ch_switchThemeBlock = { [weak self](now: Any, pre: Any?) -> Void in
             if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
                 self?.systemLabel.backgroundColor = UIColor.colorWithHexString(now.rawValue)
                 self?.systemLabel.text = "\(now)"

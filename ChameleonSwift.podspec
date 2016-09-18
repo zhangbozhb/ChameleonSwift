@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/zhangbozhb/ChameleonSwift"
   # s.screenshots  = https://github.com/zhangbozhb/ChameleonSwift.gif"
 
-  s.license      = { :type => "MIT", :file => "LICENSE" }
+  s.license      = { :type => "MIT" }
 
   s.author             = { "travel" => "zhangbozhb@gmail.com" }
   s.social_media_url   = "http://twitter.com/travel_zh"
