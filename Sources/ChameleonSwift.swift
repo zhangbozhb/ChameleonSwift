@@ -110,7 +110,7 @@ fileprivate class ThemeSwitchDataCenter {
     class func initThemeData<T>(_ obj: T?) {
         shared.switchData = ThemeSwitchData.init(data: obj)
     }
-
+    
     /**
      get current theme
      
@@ -463,7 +463,7 @@ public var kChThemeSwitchNotification = "kChThemeSwitchNotification"
 private class ThemeService {
     fileprivate var viewControllers = [WeakRef<UIViewController>]()
     
-    static let instance = ThemeService()
+    static let shared = ThemeService()
     
     func switchTheme<T>(_ data: T?) {
         let switchData = ThemeSwitchData.init(data: data)
@@ -519,7 +519,7 @@ public extension UIViewController {
      Note: you call method if parentViewController is nil, normally you ignore it
      */
     public final func ch_registerViewController() {
-        ThemeService.instance.registerViewController(self)
+        ThemeService.shared.registerViewController(self)
     }
 }
 
@@ -530,7 +530,7 @@ public extension UIApplication {
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
     public final func ch_switchTheme<T>(_ data: T) {
-        ThemeService.instance.switchTheme(data)
+        ThemeService.shared.switchTheme(data)
     }
     /**
      switch app theme
@@ -538,7 +538,7 @@ public extension UIApplication {
      - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
      */
     public final class func ch_switchTheme<T>(_ data: T) {
-        ThemeService.instance.switchTheme(data)
+        ThemeService.shared.switchTheme(data)
     }
 }
 
@@ -559,41 +559,82 @@ public extension NSObject {
 }
 
 // MARK: config
-private enum ThemeSwizzledType: Int {
-    case uiViewAwakeFromNib
-    case uiViewDidMoveToWindow
-    case uiViewControllerAwakeFromNib
-    case uiViewControllerViewWillAppear
+public enum ThemeAutoSwitchType {
+    case viewAwakeFromNib
+    case viewDidMoveToWindow
+    case viewControllerAwakeFromNib
+    case viewControllerViewWillAppear
 }
 
 open class ThemeServiceConfig {
+    // uset to accelerate speed
+    fileprivate var autoViewAwakeFromNib = false
+    fileprivate var autoViewDidMoveToWindow = false
+    fileprivate var autoViewControllerAwakeFromNib = false
+    fileprivate var autoViewControllerViewWillAppear = false
+    
+    /// auto switch types
+    private var _autoSwitch:Set<ThemeAutoSwitchType> = Set.init()
+    
     fileprivate init() {
     }
     
-    // view config
-    open var viewAutoSwitchThemeAfterAwakeFromNib = false {
-        didSet {
-            swizzledWithConfig()
-        }
-    }
-    open var viewAutoSwitchThemeAfterMovedToWindow = false {
-        didSet {
-            swizzledWithConfig()
-        }
-    }
-    // view controller config
-    open var viewControllerAutoSwitchThemeAfterAwakeFromNib = false {
-        didSet {
-            swizzledWithConfig()
-        }
-    }
-    open var viewControllerAutoSwitchThemeWhenViewWillAppear = false {
-        didSet {
-            swizzledWithConfig()
+    public func isAuto(type:ThemeAutoSwitchType) -> Bool {
+        switch type {
+        case ThemeAutoSwitchType.viewAwakeFromNib:
+            return autoViewAwakeFromNib
+        case ThemeAutoSwitchType.viewDidMoveToWindow:
+            return autoViewDidMoveToWindow
+        case ThemeAutoSwitchType.viewControllerAwakeFromNib:
+            return autoViewControllerAwakeFromNib
+        case ThemeAutoSwitchType.viewControllerViewWillAppear:
+            return autoViewControllerViewWillAppear
         }
     }
     
-    open static let instance = ThemeServiceConfig()
+    /// auto switch types
+    public var autoSwitch:[ThemeAutoSwitchType] {
+        set {
+            _autoSwitch = Set.init(newValue)
+            // reset
+            autoViewAwakeFromNib = false
+            autoViewDidMoveToWindow = false
+            autoViewControllerAwakeFromNib = false
+            autoViewControllerViewWillAppear = false
+            for type in Array.init(_autoSwitch) {
+                setAutoSwitch(type: type, auto: true)
+            }
+            swizzledWithConfig()
+        }
+        get {
+            return Array.init(_autoSwitch)
+        }
+    }
+    
+    /// config theme auto switch
+    ///
+    /// - Parameters:
+    ///   - type: type
+    ///   - auto: true auto switch, false disable auto switch for type
+    public func setAutoSwitch(type:ThemeAutoSwitchType, auto:Bool) {
+        if auto {
+            _autoSwitch.insert(type)
+        } else {
+            _autoSwitch.remove(type)
+        }
+        switch type {
+        case ThemeAutoSwitchType.viewAwakeFromNib:
+            autoViewAwakeFromNib = auto
+        case ThemeAutoSwitchType.viewDidMoveToWindow:
+            autoViewDidMoveToWindow = auto
+        case ThemeAutoSwitchType.viewControllerAwakeFromNib:
+            return autoViewControllerAwakeFromNib = auto
+        case ThemeAutoSwitchType.viewControllerViewWillAppear:
+            return autoViewControllerViewWillAppear = auto
+        }
+    }
+    
+    open static let shared = ThemeServiceConfig()
     
     /**
      init theme data
@@ -603,51 +644,51 @@ open class ThemeServiceConfig {
      
      - returns: void
      */
-    open func initThemeData<T>(data:T) {
+    open func initTheme<T>(data:T) {
         ThemeSwitchDataCenter.initThemeData(data)
     }
     
-    fileprivate var swizzledRecords:[ThemeSwizzledType: Bool] = [:]
+    fileprivate var swizzledRecords:[ThemeAutoSwitchType: Bool] = [:]
     fileprivate func swizzledWithConfig() {
-        if let _ = swizzledRecords[.uiViewAwakeFromNib] {
-        } else if viewAutoSwitchThemeAfterAwakeFromNib {
+        if let _ = swizzledRecords[.viewAwakeFromNib] {
+        } else if autoViewAwakeFromNib {
             UIView.ch_swizzledMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
-            swizzledRecords[.uiViewAwakeFromNib] = true
+            swizzledRecords[.viewAwakeFromNib] = true
         }
-        if let _ = swizzledRecords[.uiViewDidMoveToWindow] {
-        } else if viewAutoSwitchThemeAfterMovedToWindow {
+        if let _ = swizzledRecords[.viewDidMoveToWindow] {
+        } else if autoViewDidMoveToWindow {
             UIView.ch_swizzledMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
-            swizzledRecords[.uiViewDidMoveToWindow] = true
+            swizzledRecords[.viewDidMoveToWindow] = true
         }
         
-        if let _ = swizzledRecords[.uiViewControllerAwakeFromNib] {
-        } else if viewControllerAutoSwitchThemeAfterAwakeFromNib {
+        if let _ = swizzledRecords[.viewControllerAwakeFromNib] {
+        } else if autoViewControllerAwakeFromNib {
             UIViewController.ch_swizzledMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
-            swizzledRecords[.uiViewControllerAwakeFromNib] = true
+            swizzledRecords[.viewControllerAwakeFromNib] = true
         }
-        if let _ = swizzledRecords[.uiViewControllerViewWillAppear] {
-        } else if viewControllerAutoSwitchThemeWhenViewWillAppear {
+        if let _ = swizzledRecords[.viewControllerViewWillAppear] {
+        } else if autoViewControllerViewWillAppear {
             UIViewController.ch_swizzledMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
-            swizzledRecords[.uiViewControllerViewWillAppear] = true
+            swizzledRecords[.viewControllerViewWillAppear] = true
         }
     }
 }
 
 public extension UIView {
     fileprivate var ch_themeServiceConfig:ThemeServiceConfig {
-        return ThemeServiceConfig.instance
+        return ThemeServiceConfig.shared
     }
     
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.viewAutoSwitchThemeAfterAwakeFromNib {
+        if ch_themeServiceConfig.autoViewAwakeFromNib {
             ch_switchThemeSelfInit()
         }
     }
     
     func ch_didMoveToWindow() {
         ch_didMoveToWindow()
-        if let _ = window , ch_themeServiceConfig.viewAutoSwitchThemeAfterMovedToWindow {
+        if let _ = window , ch_themeServiceConfig.autoViewDidMoveToWindow {
             ch_switchThemeSelfOnly()
         }
     }
@@ -655,19 +696,19 @@ public extension UIView {
 
 public extension UIViewController {
     fileprivate var ch_themeServiceConfig:ThemeServiceConfig {
-        return ThemeServiceConfig.instance
+        return ThemeServiceConfig.shared
     }
     
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.viewControllerAutoSwitchThemeAfterAwakeFromNib {
+        if ch_themeServiceConfig.autoViewControllerAwakeFromNib {
             ch_switchThemeSelfInit()
         }
     }
     
     func ch_viewWillAppear(_ animated: Bool) {
         ch_viewWillAppear(animated)
-        if ch_themeServiceConfig.viewControllerAutoSwitchThemeWhenViewWillAppear {
+        if ch_themeServiceConfig.autoViewControllerViewWillAppear {
             ch_switchThemeSelfOnly()
         }
     }

@@ -17,9 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        ThemeServiceConfig.instance.viewControllerAutoSwitchThemeWhenViewWillAppear = true
-        ThemeServiceConfig.instance.viewAutoSwitchThemeAfterMovedToWindow = true
-        ThemeServiceConfig.instance.initThemeData(data: ColorName.Amethys)
+        ThemeServiceConfig.shared.autoSwitch = [.viewDidMoveToWindow, .viewControllerViewWillAppear]
+        ThemeServiceConfig.shared.initTheme(data: ColorName.Amethys)
         return true
     }
 

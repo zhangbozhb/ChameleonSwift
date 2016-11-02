@@ -52,7 +52,7 @@ override func ch_switchTheme(now: Any, pre: Any?) {
 **2** Set your Theme
 * Switch whole application theme
 ``` swift
-    ThemeServiceConfig.instance.initThemeData(data: ThemeStyle.Day)
+    ThemeServiceConfig.shared.initTheme(data: ThemeStyle.Day)
 ```
 * Note: if you not initThemeData, arg now in ch_switchTheme:pre or ch_switchBlock may nil
 
@@ -87,11 +87,7 @@ Some useful function define in ThemeSwitchHelper.
 
     ```swift
         // config your theme switch
-        let tsc = ThemeServiceConfig.instance
-        tsc.viewAutoSwitchThemeAfterAwakeFromNib = true
-        tsc.viewAutoSwitchThemeAfterMovedToWindow = true
-        tsc.viewControllerAutoSwitchThemeAfterAwakeFromNib = false
-        tsc.viewControllerAutoSwitchThemeWhenViewWillAppear = true
+        ThemeServiceConfig.shared.autoSwitch = [.viewDidMoveToWindow, .viewControllerViewWillAppear]
     ```
     
     **Note**: Auto call is convenient and save your time, but you should follow some rules, or else you may be in trouble.
@@ -202,7 +198,7 @@ override func ch_switchTheme(now: Any, pre: Any?) {
 ### 第二步: 设置的主题数据
 * 设置整个app
 ``` swift
-    ThemeServiceConfig.instance.initThemeData(data: ThemeStyle.Day)
+    ThemeServiceConfig.shared.initTheme(data: ThemeStyle.Day)
 ```
 * 设置单个view和subview
 ``` swift
