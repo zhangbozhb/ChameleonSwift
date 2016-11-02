@@ -59,15 +59,15 @@ override func ch_switchTheme(now: Any, pre: Any?) {
 **3** Switch Theme
 * Switch whole application theme
 ``` swift
-    UIApplication.ch_switchTheme(ThemeStyle.Night)
+    UIApplication.ch_switch(ThemeStyle.Night)
 ```
 * Switch specified view's theme (sub view as well)
 ``` swift
-    viewInstance.ch_switchTheme(ThemeStyle.Night)
+    viewInstance.ch_switch(ThemeStyle.Night)
  ```
 * Switch specified view controller's theme (child view controlls as well)
 ``` swift
-    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
+    viewControllerInstance.ch_switch(ThemeStyle.Night)
  ```
 
 ### Useful Helper Function
@@ -206,28 +206,28 @@ override func ch_switchTheme(now: Any, pre: Any?) {
 ```
 * 设置单个view和subview
 ``` swift
-    viewInstance.ch_switchTheme(ThemeStyle.Night)
+    viewInstance.ch_switch(ThemeStyle.Night)
  ```
 * 设置单个 view controller 和其子 view controller
 ``` swift
-    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
+    viewControllerInstance.ch_switch(ThemeStyle.Night)
  ```
 
 ### 第三步：切换主题，皮肤
 你只需要调用一个方法就可以实现
 ```swift
-    UIApplication.ch_switchTheme(ThemeStyle.Night)
+    UIApplication.ch_switch(ThemeStyle.Night)
 ```
 
 
 当然，你可以选择行的修改你想要改变view / view controller 的主题
 view 切换调用:
 ```swift
-    viewInstance.ch_switchTheme(ThemeStyle.Night)
+    viewInstance.ch_switch(ThemeStyle.Night)
 ```
 view controller 调用:
 ```swift
-    viewControllerInstance.ch_switchTheme(ThemeStyle.Night)
+    viewControllerInstance.ch_switch(ThemeStyle.Night)
 ```
 
 ### Swift 版本问题
