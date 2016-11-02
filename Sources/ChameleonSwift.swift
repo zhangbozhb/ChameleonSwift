@@ -370,7 +370,7 @@ extension UIViewController: ThemeSwitchProtocol {
 
 public extension UIView {
     /// theme switch block
-    public var ch_switchThemeBlock:SwitchThemeBlock? {
+    public var ch_switchBlock:SwitchThemeBlock? {
         set {
             _ch_switchThemeBlock = newValue
         }
@@ -415,7 +415,7 @@ public extension UIView {
 
 public extension UIViewController {
     /// theme switch block
-    public var ch_switchThemeBlock:SwitchThemeBlock? {
+    public var ch_switchBlock:SwitchThemeBlock? {
         set {
             _ch_switchThemeBlock = newValue
         }

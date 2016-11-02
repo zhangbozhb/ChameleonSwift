@@ -63,7 +63,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                  .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
         
-        systemLabel.ch_switchThemeBlock = { [weak self](now: Any, pre: Any?) -> Void in
+        systemLabel.ch_switchBlock = { [weak self](now: Any, pre: Any?) -> Void in
             if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
                 self?.systemLabel.backgroundColor = UIColor.colorWithHexString(now.rawValue)
                 self?.systemLabel.text = "\(now)"

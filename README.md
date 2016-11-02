@@ -28,7 +28,7 @@ You can define you theme with any data. Let's assume you theme data is ThemeStyl
 **1**, Enable view to switch theme ability:
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:Any, pre:Any?) -> Void in
+label.ch_switchBlock = { (now:Any, pre:Any?) -> Void in
     // your code change theme/skin
     if let now = ThemeSwitchHelper<ThemeStyle>.parseTheme(now) { // get your ThemeStyle from now
         label.text = "\(now)"
@@ -54,7 +54,7 @@ override func ch_switchTheme(now: Any, pre: Any?) {
 ``` swift
     ThemeServiceConfig.instance.initThemeData(data: ThemeStyle.Day)
 ```
-* Note: if you not initThemeData, arg now in ch_switchTheme:pre or ch_switchThemeBlock may nil
+* Note: if you not initThemeData, arg now in ch_switchTheme:pre or ch_switchBlock may nil
 
 **3** Switch Theme
 * Switch whole application theme
@@ -96,13 +96,13 @@ Some useful function define in ThemeSwitchHelper.
     
     **Note**: Auto call is convenient and save your time, but you should follow some rules, or else you may be in trouble.
     
-    * No Crash: Be aware you should promise you method ch_switchTheme(_:pre:) and ch_switchThemeBlock run without exceptions. If unfortunately it happened, you app will crash.
+    * No Crash: Be aware you should promise you method ch_switchTheme(_:pre:) and ch_switchBlock run without exceptions. If unfortunately it happened, you app will crash.
     * Save your status: You should save you status aware in some place, and theme switch method should status aware. since callback is automatic, if you theme or you appearance is status related, it may work not properly. For example, you has a button which theme is status related. Its background is black in Day, white in Night, and red if it selected; if you have never save your selection status or theme switch ignored selection status, auto callback will not work properly.
 
 
 * 2, Call orders:
     * order between parent and child(view/subviews, view controller/ child view controller): child will call before parent;
-    * ch_switchTheme(_:pre:) and ch_switchThemeBlock: if both defined, ch_switchTheme(_:pre:) run before switchThemeBlock;
+    * ch_switchTheme(_:pre:) and ch_switchBlock: if both defined, ch_switchTheme(_:pre:) run before switchThemeBlock;
     * view, view controller: if your app switch theme, view theme switch related method run before view controller. If you change one view theme in both view and view controller, changes in view controller will take effect.
     
     **Note**:
@@ -177,7 +177,7 @@ ChameleonSwift 提供了一种机制，你可以很方便的使得你的 App 具
 
 ```swift
 let label = UILabel()
-label.ch_switchThemeBlock = { (now:Any, pre:Any?) -> Void in
+label.ch_switchBlock = { (now:Any, pre:Any?) -> Void in
     // 你修改主题的代码
     if let now = ThemeSwitchHelper<你定义的主题类型>.parseTheme(now) { // 获取 真正的主题
         label.text = "\(now)"
@@ -254,12 +254,12 @@ ThemeSwitchHelper定义了一些有用的函数
 
 #### 注意
 不过任何好用，其实都是由代价的，自动调用使得主题切换调用更隐晦，响应的也不容易调试。为了你更好的使用自动调用，几点注意事项
-* 确保不抛出异常： ch_switchThemeBlock 或者 ch_switchTheme(_:pre:)， 不要抛出异常，否则会 crash
+* 确保不抛出异常： ch_switchBlock 或者 ch_switchTheme(_:pre:)， 不要抛出异常，否则会 crash
 * 非主题相关的状态保存在 view 或者 view controller中： 比如 一个 view 具有选中属性，在选中不选中的时候由不同的外观，你需要在某个地方存放这个状态，否则外观会被主题切换破坏调用。比如你 主题切换会把背景色设置为白色或黑色，你的 App 在某个地方人为的设置为红色，而你有恰好的配置了自动调用，那么你可能会惊讶的发现 view 颜色不是你想要的红色，你需要考虑到这一点。比较方便的方式是，你用某种方式记录你设置的红色状态，在 主题切换的时候，发现为红色是不修改背景色。
 
 
 ### 常见问题：
-* 1，闭包 ch_switchThemeBlock 和 ch_switchTheme(_:pre:) 方法同时存在，会出现什么问题？
+* 1，闭包 ch_switchBlock 和 ch_switchTheme(_:pre:) 方法同时存在，会出现什么问题？
 闭包和函数都会被调用，只不过闭包会在函数调用的后面调用
 
 * 2，view controller 主题切换闭包,函数没有调用.
