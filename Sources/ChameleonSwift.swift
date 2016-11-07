@@ -121,12 +121,6 @@ fileprivate class ThemeSwitchDataCenter {
     }
 }
 
-
-
-// MARK: View /View controller Switch extension
-private var kThemeLastSwitchKey: Void?
-private var kThemeSwitchBlockKey: Void?
-private var kThemeSwitchInternalConfigKey: Void?
 /**
  Switch theme block
  
@@ -169,292 +163,208 @@ extension ThemeSwitchData {
     }
 }
 
+protocol ChameleonCallBackProtocol:class {
+    /// switch theme
+    ///
+    /// - Parameters:
+    ///   - now:  current wrapped theme data, however you can not use it directly, you should user ChameleonHelper<YourThemeType>.parse() to get real theme data
+    ///   - pre: pre wrapped theme data. same to now
+    func switchTheme(now: Any, pre: Any?)
+}
 
-/// theme switch protocol
-protocol ThemeSwitchProtocol: class {
-    /// data used to theme switch
-    var _ch_themeSwitchData: ThemeSwitchData? {get set}
+protocol ChameleonProtocol:class {
+    /// internal data used theme switch
+    var data:ThemeSwitchData? {get set}
     
-    /// data used to theme config
-    var _ch_themeSwitchInternalConf: ThemeSwitchInternalConf {get set}
+    /// interal config for theme switch
+    var conf:ThemeSwitchInternalConf {get set}
     
-    /// theme switch block
-    var _ch_switchThemeBlock:SwitchThemeBlock? {get set}
+    /// switch block
+    var refreshBlock:SwitchThemeBlock? {get set}
+    
+    /// refresh call back protocal
+    var callback:ChameleonCallBackProtocol? {get}
+    
+    /// childrens of ChameleonProtocol
+    var childrens: [ChameleonProtocol] {get}
+    
+    
+    /// call before switch theme
+    func before()
+    
+    /// call after switch theme
+    func after()
+}
+
+extension ChameleonProtocol {
+    /// theme switch runner
+    ///
+    /// - Parameter data: theme switch data
+    func workerWrapper(data:ThemeSwitchData) {
+        let preData = self.data
+        guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
+            return
+        }
+        
+        // save switch data
+        self.data = data
+        
+        // before process
+        before()
+        
+        // call switch theme callback
+        callback?.switchTheme(now: data.extData, pre: preData?.extData)
+        
+        // call switch theme method
+        worker(now: data, pre: preData)
+        
+        // call switch theme block
+        refreshBlock?(data.extData, preData?.extData)
+        
+        // after process
+        after()
+    }
     
     /// theme switch process
     ///
     /// - Parameters:
     ///   - now: cur theme data for switch
     ///   - pre: pre theme data
-    func ch_switchThemeWorker(now: ThemeSwitchData, pre: ThemeSwitchData?)
-    
-    
-    /// process before theme switch happen
-    func ch_switchThemeBefore()
-    /// process after theme switch happen
-    func ch_switchThemeAfter()
-}
-
-
-extension ThemeSwitchProtocol {
-    
-    /// theme switch runner
-    ///
-    /// - Parameter data: theme switch data
-    func ch_switchThemeWrapper(_ data:ThemeSwitchData) {
-        let preData = _ch_themeSwitchData
-        guard ThemeSwitchData.shouldUpdate(preData, lat: data) else {
+    func worker(now: ThemeSwitchData, pre: ThemeSwitchData?) {
+        guard conf.recursion else {
             return
         }
-        // before process
-        ch_switchThemeBefore()
         
-        // save switch data
-        _ch_themeSwitchData = data
-        
-        // call switch theme method
-        ch_switchThemeWorker(now: data, pre: preData)
-        
-        // call switch theme block
-        _ch_switchThemeBlock?(data.extData, preData?.extData)
-        
-        // after process
-        ch_switchThemeAfter()
-    }
-    
-    /**
-     switch self and subviews theme
-     
-     - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
-     */
-    func ch_switchTheme<T>(data:T) {
-        _ch_themeSwitchInternalConf.passConf = true
-        _ch_themeSwitchInternalConf.recursion = true
-        _ch_themeSwitchInternalConf.dataSelf = true
-        ch_switchThemeWrapper(ThemeSwitchData.init(data: data))
-    }
-    
-    /**
-     switch self and subviews theme
-     */
-    func ch_switchTheme(refresh:Bool) {
-        _ch_themeSwitchInternalConf.passConf = true
-        _ch_themeSwitchInternalConf.recursion = true
-        if let data = _ch_themeSwitchData {
-            if refresh {
-                ch_switchThemeWrapper(data.copyWithExtData())
-            } else {
-                ch_switchThemeWrapper(data)
+        if conf.passConf {
+            for child in childrens {
+                child.conf = conf
+                child.workerWrapper(data: now)
             }
         } else {
-            ch_switchThemeWrapper(ThemeSwitchDataCenter.shared.switchData)
+            for child in childrens {
+                child.workerWrapper(data: now)
+            }
+        }
+    }
+}
+
+open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
+    /// owner
+    weak var owner:DT?
+    
+    
+    /// internal data used theme switch
+    var data:ThemeSwitchData?
+    
+    /// interal config for theme switch
+    var conf:ThemeSwitchInternalConf = ThemeSwitchInternalConf.init(passConf: true)
+    
+    
+    /// switch block
+    public var refreshBlock:SwitchThemeBlock?
+    
+    var childrens: [ChameleonProtocol] {
+        if let v = owner as? UIView {
+            return v.subviews.flatMap({ $0.ch })
+        } else if let v = owner as? UIViewController {
+            return v.childViewControllers.flatMap({ $0.ch })
+        }
+        return []
+    }
+    
+    fileprivate init(owner:DT) {
+        self.owner = owner
+    }
+    
+    /// call before switch theme
+    func before() {
+        
+    }
+    /// call after switch theme
+    func after() {
+        if let v = owner as? UIViewController {
+            v.setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+    
+    var callback:ChameleonCallBackProtocol? {
+        return owner as? ChameleonCallBackProtocol
+    }
+    
+    /// refresh self and children theme
+    ///
+    /// - Parameter data: ata: data used to switch theme, will pass to refreshBlock(data:pre:) as first argument
+    public func refresh<T>(with data:T) {
+        conf.passConf = true
+        conf.recursion = true
+        conf.dataSelf = true
+        workerWrapper(data: ThemeSwitchData.init(data: data))
+    }
+    
+    /**
+     switch self and subviews theme
+     */
+    public func refresh(refresh:Bool = true) {
+        conf.passConf = true
+        conf.recursion = true
+        if let data = self.data {
+            if refresh {
+                workerWrapper(data: data.copyWithExtData())
+            } else {
+                workerWrapper(data: data)
+            }
+        } else {
+            workerWrapper(data: ThemeSwitchDataCenter.shared.switchData)
         }
     }
     
     /**
      this method should use internal for auto init
      */
-    func ch_switchThemeSelfInit() {
-        _ch_themeSwitchInternalConf.passConf = true
-        _ch_themeSwitchInternalConf.recursion = true
-        ch_switchThemeWrapper(ThemeSwitchDataCenter.shared.switchData)
+    func refreshSelfInit() {
+        conf.passConf = true
+        conf.recursion = true
+        workerWrapper(data: ThemeSwitchDataCenter.shared.switchData)
     }
     
     /**
      this method should use internal for auto switch config (for circleCall method)
      */
-    func ch_switchThemeSelfOnly() {
-        _ch_themeSwitchInternalConf.passConf = false
-        _ch_themeSwitchInternalConf.recursion = false
-        if let data = _ch_themeSwitchData , _ch_themeSwitchInternalConf.dataSelf {
-            ch_switchThemeWrapper(data)
+    func refreshSelfOnly() {
+        conf.passConf = false
+        conf.recursion = false
+        if let data = self.data , conf.dataSelf {
+            workerWrapper(data: data)
         } else {
-            ch_switchThemeWrapper(ThemeSwitchDataCenter.shared.switchData)
+            workerWrapper(data: ThemeSwitchDataCenter.shared.switchData)
         }
     }
 }
 
-
-extension UIView :ThemeSwitchProtocol {
-    var _ch_themeSwitchData: ThemeSwitchData? {
+private var kChameleonKey: Void?
+extension UIView {
+    public var ch: ThemeSwitch<UIView> {
         get {
-            return objc_getAssociatedObject(self, &kThemeLastSwitchKey) as? ThemeSwitchData
-        }
-        set {
-            objc_setAssociatedObject(self, &kThemeLastSwitchKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    var _ch_themeSwitchInternalConf: ThemeSwitchInternalConf {
-        get {
-            if let conf = objc_getAssociatedObject(self, &kThemeSwitchInternalConfigKey) as? ThemeSwitchInternalConf {
-                return conf
-            } else {
-                let conf = ThemeSwitchInternalConf.init(passConf: true)
-                objc_setAssociatedObject(self, &kThemeSwitchInternalConfigKey, conf, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                return conf
+            if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIView> {
+                return pre
             }
+            let now = ThemeSwitch.init(owner: self)
+            objc_setAssociatedObject(self, &kChameleonKey, now, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return now
         }
-        set {
-            objc_setAssociatedObject(self, &kThemeSwitchInternalConfigKey, newValue.copy(), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    var _ch_switchThemeBlock:SwitchThemeBlock? {
-        get {
-            if let data =  objc_getAssociatedObject(self, &kThemeSwitchBlockKey) as? CHObjectWrapper<SwitchThemeBlock> {
-                return data.value
-            }
-            return nil
-        }
-        set {
-            objc_setAssociatedObject(self, &kThemeSwitchBlockKey, CHObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    
-    func ch_switchThemeWorker(now: ThemeSwitchData, pre: ThemeSwitchData?) {
-        ch_switchTheme(now.extData, pre: pre?.extData)
-    }
-    func ch_switchThemeBefore() {
-    }
-    func ch_switchThemeAfter() {
     }
 }
 
-extension UIViewController: ThemeSwitchProtocol {
-    var _ch_themeSwitchData: ThemeSwitchData? {
+extension UIViewController {
+    public var ch: ThemeSwitch<UIViewController> {
         get {
-            return objc_getAssociatedObject(self, &kThemeLastSwitchKey) as? ThemeSwitchData
-        }
-        set {
-            objc_setAssociatedObject(self, &kThemeLastSwitchKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    var _ch_themeSwitchInternalConf: ThemeSwitchInternalConf {
-        get {
-            if let conf = objc_getAssociatedObject(self, &kThemeSwitchInternalConfigKey) as? ThemeSwitchInternalConf {
-                return conf
-            } else {
-                let conf = ThemeSwitchInternalConf.init(passConf: true)
-                objc_setAssociatedObject(self, &kThemeSwitchInternalConfigKey, conf, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                return conf
+            if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIViewController> {
+                return pre
             }
+            let now = ThemeSwitch.init(owner: self)
+            objc_setAssociatedObject(self, &kChameleonKey, now, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return now
         }
-        set {
-            objc_setAssociatedObject(self, &kThemeSwitchInternalConfigKey, newValue.copy(), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    var _ch_switchThemeBlock:SwitchThemeBlock? {
-        get {
-            if let data =  objc_getAssociatedObject(self, &kThemeSwitchBlockKey) as? CHObjectWrapper<SwitchThemeBlock> {
-                return data.value
-            }
-            return nil
-        }
-        set {
-            objc_setAssociatedObject(self, &kThemeSwitchBlockKey, CHObjectWrapper(value: newValue), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-    
-    
-    func ch_switchThemeWorker(now: ThemeSwitchData, pre: ThemeSwitchData?) {
-        ch_switchTheme(now.extData, pre: pre?.extData)
-    }
-    func ch_switchThemeBefore() {
-    }
-    func ch_switchThemeAfter() {
-        // update status bar
-        setNeedsStatusBarAppearanceUpdate()
-    }
-}
-
-
-public extension UIView {
-    /// theme switch block
-    public var ch_switchBlock:SwitchThemeBlock? {
-        set {
-            _ch_switchThemeBlock = newValue
-        }
-        get {
-            return _ch_switchThemeBlock
-        }
-    }
-    
-    /// theme switch worker
-    ///
-    /// - Parameters:
-    ///   - now: current wrapped theme data, however you can not use it directly, you should user ThemeSwitchHelper<YourThemeType>.parseTheme() to get real theme data
-    ///   - pre: current wrapped theme data. same to now
-    public func ch_switchTheme(_ now: Any, pre: Any?) {
-        // switch sub views
-        if let data = _ch_themeSwitchData , _ch_themeSwitchInternalConf.recursion {
-            for sub in subviews {
-                if _ch_themeSwitchInternalConf.passConf {
-                    sub._ch_themeSwitchInternalConf = _ch_themeSwitchInternalConf
-                }
-                sub.ch_switchThemeWrapper(data)
-            }
-        }
-    }
-    
-    /**
-     switch self and subviews theme
-     
-     - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
-     */
-    public func ch_switch<T>(_ data:T) {
-        self.ch_switchTheme(data: data)
-    }
-    
-    /**
-     switch self and subviews theme
-     */
-    public func ch_refresh(refresh:Bool = true) {
-        ch_switchTheme(refresh: refresh)
-    }
-}
-
-public extension UIViewController {
-    /// theme switch block
-    public var ch_switchBlock:SwitchThemeBlock? {
-        set {
-            _ch_switchThemeBlock = newValue
-        }
-        get {
-            return _ch_switchThemeBlock
-        }
-    }
-    
-    /// theme switch worker
-    ///
-    /// - Parameters:
-    ///   - now: current wrapped theme data, however you can not use it directly, you should user ThemeSwitchHelper<YourThemeType>.parseTheme() to get real theme data
-    ///   - pre: current wrapped theme data. same to now
-    public func ch_switchTheme(_ now: Any, pre: Any?) {
-        // switch sub view controller
-        if let data = _ch_themeSwitchData , _ch_themeSwitchInternalConf.recursion {
-            for viewController in childViewControllers {
-                if _ch_themeSwitchInternalConf.passConf {
-                    viewController._ch_themeSwitchInternalConf = _ch_themeSwitchInternalConf
-                }
-                viewController.ch_switchThemeWrapper(data)
-            }
-        }
-    }
-    
-    /**
-     switch self and subviews theme
-     
-     - parameter data: data used to switch theme, will pass to ch_switchTheme(_:pre:) as first argument
-     */
-    public func ch_switch<T>(_ data:T) {
-        self.ch_switchTheme(data: data)
-    }
-    
-    /**
-     switch self and subviews theme
-     */
-    public func ch_refresh(refresh:Bool = true) {
-        ch_switchTheme(refresh: refresh)
     }
 }
 
@@ -465,28 +375,28 @@ private class ThemeService {
     
     static let shared = ThemeService()
     
-    func switchTheme<T>(_ data: T?) {
+    func refresh<T>(with data: T?) {
         let switchData = ThemeSwitchData.init(data: data)
         ThemeSwitchDataCenter.shared.switchData = switchData
         let internalConf = ThemeSwitchInternalConf.init(passConf: true)
         for window in UIApplication.shared.windows {
             // view
-            window._ch_themeSwitchInternalConf = internalConf
-            window.ch_switchThemeWrapper(switchData)
+            window.ch.conf = internalConf
+            window.ch.workerWrapper(data: switchData)
             
             // view controller
-            window.rootViewController?.view._ch_themeSwitchInternalConf = internalConf
-            window.rootViewController?.view.ch_switchThemeWrapper(switchData)
-            window.rootViewController?._ch_themeSwitchInternalConf = internalConf
-            window.rootViewController?.ch_switchThemeWrapper(switchData)
+            window.rootViewController?.view.ch.conf = internalConf
+            window.rootViewController?.view.ch.workerWrapper(data: switchData)
+            window.rootViewController?.ch.conf = internalConf
+            window.rootViewController?.ch.workerWrapper(data: switchData)
         }
         // enforce update view controller
         for weakRef in viewControllers {
             if let viewController = weakRef.value , nil == viewController.parent {
-                viewController.view._ch_themeSwitchInternalConf = internalConf
-                viewController.view.ch_switchThemeWrapper(switchData)
-                viewController._ch_themeSwitchInternalConf = internalConf
-                viewController.ch_switchThemeWrapper(switchData)
+                viewController.view.ch.conf = internalConf
+                viewController.view.ch.workerWrapper(data: switchData)
+                viewController.ch.conf = internalConf
+                viewController.ch.workerWrapper(data: switchData)
             }
         }
         var userInfo:[String: ThemeDataWraper<T>] = [:]
@@ -498,7 +408,7 @@ private class ThemeService {
                                         userInfo: userInfo)
     }
     
-    fileprivate func registerViewController(_ controller: UIViewController) {
+    fileprivate func register(controller: UIViewController) {
         var valideViewControllers = [WeakRef<UIViewController>]()
         for weakRef in viewControllers {
             if weakRef.value == controller {
@@ -513,32 +423,34 @@ private class ThemeService {
     }
 }
 
-public extension UIViewController {
+
+extension ThemeSwitch where DT: UIViewController {
     /**
      force view controller enable switch theme/skin
      Note: you call method if parentViewController is nil, normally you ignore it
      */
-    public final func ch_registerViewController() {
-        ThemeService.shared.registerViewController(self)
+    public final func register() {
+        if let vc = owner as? UIViewController {
+            ThemeService.shared.register(controller: vc)
+        }
+    }
+}
+
+public final class ChameleonApplication {
+    /// refresh app theme with data
+    ///
+    /// - Parameter data: theme data
+    public func refresh<T>(with data:T) {
+        ThemeService.shared.refresh(with: data)
     }
 }
 
 public extension UIApplication {
-    /**
-     switch app theme
-     
-     - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
-     */
-    public final func ch_switchTheme<T>(_ data: T) {
-        ThemeService.shared.switchTheme(data)
+    public final var ch:ChameleonApplication {
+        return ChameleonApplication()
     }
-    /**
-     switch app theme
-     
-     - parameter data: data pass to view/viewcontroller's ch_switchTheme(_:pre:)
-     */
-    public final class func ch_switchTheme<T>(_ data: T) {
-        ThemeService.shared.switchTheme(data)
+    public class final var ch:ChameleonApplication {
+        return ChameleonApplication()
     }
 }
 
@@ -675,41 +587,33 @@ open class ThemeServiceConfig {
 }
 
 public extension UIView {
-    fileprivate var ch_themeServiceConfig:ThemeServiceConfig {
-        return ThemeServiceConfig.shared
-    }
-    
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.autoViewAwakeFromNib {
-            ch_switchThemeSelfInit()
+        if ThemeServiceConfig.shared.autoViewAwakeFromNib {
+            ch.refreshSelfInit()
         }
     }
     
     func ch_didMoveToWindow() {
         ch_didMoveToWindow()
-        if let _ = window , ch_themeServiceConfig.autoViewDidMoveToWindow {
-            ch_switchThemeSelfOnly()
+        if let _ = window , ThemeServiceConfig.shared.autoViewDidMoveToWindow {
+            ch.refreshSelfOnly()
         }
     }
 }
 
 public extension UIViewController {
-    fileprivate var ch_themeServiceConfig:ThemeServiceConfig {
-        return ThemeServiceConfig.shared
-    }
-    
     func ch_awakeFromNib() {
         ch_awakeFromNib()
-        if ch_themeServiceConfig.autoViewControllerAwakeFromNib {
-            ch_switchThemeSelfInit()
+        if ThemeServiceConfig.shared.autoViewControllerAwakeFromNib {
+            ch.refreshSelfInit()
         }
     }
     
     func ch_viewWillAppear(_ animated: Bool) {
         ch_viewWillAppear(animated)
-        if ch_themeServiceConfig.autoViewControllerViewWillAppear {
-            ch_switchThemeSelfOnly()
+        if ThemeServiceConfig.shared.autoViewControllerViewWillAppear {
+            ch.refreshSelfOnly()
         }
     }
 }
@@ -717,14 +621,14 @@ public extension UIViewController {
 
 // MARK: Helper functions
 /// theme helper
-open class ThemeSwitchHelper<T> where T: Hashable {
+open class ChameleonHelper<T> where T: Hashable {
     
     /**
      get current theme
      
      - returns: current theme
      */
-    public final class func currentTheme() -> T? {
+    public final class func current() -> T? {
         return ThemeSwitchDataCenter.themeData()
     }
     
@@ -737,7 +641,7 @@ open class ThemeSwitchHelper<T> where T: Hashable {
      - returns: current theme value
      */
     public final class func currentThemeData<D>(_ data:[T: D], d:D? = nil) -> D? {
-        if let s = self.currentTheme() {
+        if let s = self.current() {
             return data[s]
         }
         return d
@@ -745,13 +649,13 @@ open class ThemeSwitchHelper<T> where T: Hashable {
     
     /**
      use parse theme from data
-     this func used in ch_switchTheme(_:pre:), notificaiton (useinfo["data"])
+     this func used in refreshBlock(data:pre:), notificaiton (useinfo["data"])
      
      - parameter data: data to parse
      
      - returns: theme
      */
-    public final class func parseTheme(_ data: Any?) -> T? {
+    public final class func parse(_ data: Any?) -> T? {
         if let d = data as? ThemeDataWraper<T> {
             return d.value
         }

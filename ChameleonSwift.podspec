@@ -1,5 +1,5 @@
 #
-#  pod spec lint ChameleonSwift.podspec--allow-warnings --verbose
+#  pod spec lint ChameleonSwift.podspec --allow-warnings --verbose
 #  pod trunk push ChameleonSwift.podspec --allow-warnings --verbose
 
 Pod::Spec.new do |s|

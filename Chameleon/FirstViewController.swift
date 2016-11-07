@@ -17,8 +17,8 @@ class CustomerView1:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(_ now: Any, pre: Any?) {
-        if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+   override func switchTheme(now: Any, pre: Any?) {
+        if let now = ChameleonHelper<ColorName>.parse(now) {
             text = "\(now)"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
         } else {
@@ -35,8 +35,8 @@ class CustomerView2:UILabel {
         super.init(frame: frame)
     }
     
-    override func ch_switchTheme(_ now: Any, pre: Any?) {
-        if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+   override func switchTheme(now: Any, pre: Any?) {
+        if let now = ChameleonHelper<ColorName>.parse(now) {
             text = "\(now) no AndroidGree AntiqueBras"
             backgroundColor = UIColor.colorWithHexString(now.rawValue)
         } else {
@@ -63,14 +63,14 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
                  .Ao, .AppleGree, .Aprico, .Aqu, .Aquamarin]
         
         
-        systemLabel.ch_switchBlock = { [weak self](now: Any, pre: Any?) -> Void in
-            if let now = ThemeSwitchHelper<ColorName>.parseTheme(now) {
+        systemLabel.ch.refreshBlock = { [weak self](now: Any, pre: Any?) -> Void in
+            if let now = ChameleonHelper<ColorName>.parse(now) {
                 self?.systemLabel.backgroundColor = UIColor.colorWithHexString(now.rawValue)
                 self?.systemLabel.text = "\(now)"
             } else {
                 let df = DateFormatter.init()
                 df.dateFormat = "mm:ss"
-                self?.systemLabel.text = df.string(from: Date.init()) + "\tno data in ch_switchThemeBlock"
+                self?.systemLabel.text = df.string(from: Date.init()) + "\tno data in refreshBlock"
             }
             
         }
@@ -100,8 +100,7 @@ class FirstViewController: UIViewController, UIPickerViewDataSource, UIPickerVie
         if let cell = pickerView.view(forRow: row, forComponent: component) {
             cell.backgroundColor = UIColor.colorWithHexString(datas[row].rawValue)
         }
-        
-        UIApplication.ch_switchTheme(datas[row])
+        UIApplication.ch.refresh(with: datas[row])
     }
 }
 
