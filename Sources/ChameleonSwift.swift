@@ -163,7 +163,7 @@ extension ThemeSwitchData {
     }
 }
 
-protocol ChameleonCallBackProtocol:class {
+public protocol ChameleonCallBackProtocol:class {
     /// switch theme
     ///
     /// - Parameters:
@@ -300,10 +300,10 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
         conf.dataSelf = true
         workerWrapper(data: ThemeSwitchData.init(data: data))
     }
-    
-    /**
-     switch self and subviews theme
-     */
+
+    /// refresh self and children theme
+    ///
+    /// - Parameter refresh: true force refresh, false will use current theme
     public func refresh(refresh:Bool = true) {
         conf.passConf = true
         conf.recursion = true
@@ -442,6 +442,17 @@ public final class ChameleonApplication {
     /// - Parameter data: theme data
     public func refresh<T>(with data:T) {
         ThemeService.shared.refresh(with: data)
+    }
+    
+    /// refresh self and children theme
+    ///
+    /// - Parameter refresh: true force refresh, false will use current theme
+    public func refresh(refresh:Bool = true) {
+        if refresh {
+            ThemeService.shared.refresh(with: ThemeSwitchDataCenter.shared.switchData.copyWithExtData())
+        } else {
+            ThemeService.shared.refresh(with: ThemeSwitchDataCenter.shared.switchData)
+        }
     }
 }
 

@@ -50,13 +50,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 extension UIView : ChameleonCallBackProtocol {
-    func switchTheme(now: Any, pre: Any?){
+    public func switchTheme(now: Any, pre: Any?){
         
     }
 }
 
 extension UIViewController : ChameleonCallBackProtocol {
-    func switchTheme(now: Any, pre: Any?){
+    public func switchTheme(now: Any, pre: Any?){
         
     }
 }
