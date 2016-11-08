@@ -341,8 +341,13 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
     }
 }
 
+protocol ChameleonBase {
+    associatedtype DataType
+    var ch: DataType { get }
+}
+
 private var kChameleonKey: Void?
-extension UIView {
+extension UIView: ChameleonBase {
     public var ch: ThemeSwitch<UIView> {
         get {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIView> {
@@ -355,7 +360,7 @@ extension UIView {
     }
 }
 
-extension UIViewController {
+extension UIViewController: ChameleonBase {
     public var ch: ThemeSwitch<UIViewController> {
         get {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIViewController> {
@@ -456,7 +461,7 @@ public final class ChameleonApplication {
     }
 }
 
-public extension UIApplication {
+extension UIApplication: ChameleonBase {
     public final var ch:ChameleonApplication {
         return ChameleonApplication()
     }
