@@ -85,11 +85,11 @@ extension UIViewController : ChameleonCallBackProtocol {
 
 ### Useful Helper Function
 Some useful function define in ChameleonHelper.
-* get current theme: ChameleonHelper<Your Defined Theme Class>.currentTheme
+* get current theme: ChameleonHelper<Your Defined Theme Class>.current
 * get current theme from args: ChameleonHelper<Your Defined Theme Class>.parse()
 * get current theme image: ChameleonHelper<Your Defined Theme Class>.image()
 * get current theme color: ChameleonHelper<Your Defined Theme Class>.color()
-* get current theme data, if your find image/color cannot satisfy your needs: ChameleonHelper<Your Defined Theme Class>.currentThemeData()
+* get current theme data, if your find image/color cannot satisfy your needs: ChameleonHelper<Your Defined Theme Class>.currentData()
 
 
 ### Advance usage
@@ -135,7 +135,7 @@ Some useful function define in ChameleonHelper.
     * a, your should extension UIView/UIViewController support ChameleonCallBackProtocol
     * b, rename to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper to ChameleonHelper
-    * a, func currentTheme() to func current()
+    * a, func currentTheme() to property current
 * 3, ch_* function/property not available and use ch.* instead
 
 ## Installation
@@ -204,7 +204,7 @@ label.ch.refreshBlock = { (now:Any, pre:Any?) -> Void in
     }
 }
 ```
-* 注意: now 通过 ChameleonHelper<你定义的主题类型>.currentTheme 获取当前的主题（后面步骤二传入的参数）
+* 注意: now 通过 ChameleonHelper<你定义的主题类型>.current 获取当前的主题（后面步骤二传入的参数）
 override ChameleonCallBackProtocol.switchTheme方法实现：
 ```swift
 override func switchTheme(now: Any, pre: Any?) {
@@ -267,11 +267,11 @@ view controller 调用:
 
 ## 有用的帮助函数
 ChameleonHelper定义了一些有用的函数
-* 获取当前的主题: ChameleonHelper<你定义的主题类型>.currentTheme
+* 获取当前的主题: ChameleonHelper<你定义的主题类型>.current
 * 解析参数获取当前主题: ChameleonHelper<你定义的主题类型>.parse()
 * 当前主题的图片: ChameleonHelper<你定义的主题类型>.image()
 * 当前主题的颜色: ChameleonHelper<你定义的主题类型>.color()
-* 当前主题的配置（如果图片,颜色不满足你的需求,你可以使用这个）: ChameleonHelper<你定义的主题类型>.currentThemeData()
+* 当前主题的配置（如果图片,颜色不满足你的需求,你可以使用这个）: ChameleonHelper<你定义的主题类型>.currentData()
 
 
 ## 高级使用：

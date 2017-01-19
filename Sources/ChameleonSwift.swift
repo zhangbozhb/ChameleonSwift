@@ -644,6 +644,21 @@ open class ChameleonHelper<T> where T: Hashable {
      
      - returns: current theme value
      */
+    public final class func currentData<D>(_ data:[T: D], d:D? = nil) -> D? {
+        if let s = self.current {
+            return data[s]
+        }
+        return d
+    }
+    /**
+     get current theme data
+     
+     - parameter data: theme data config for themes
+     - parameter d:    default value if theme value for current thme is not in input data
+     
+     - returns: current theme value
+     */
+    @available(*, deprecated, message: "currentThemeData is deprecated.", renamed: "currentData")
     public final class func currentThemeData<D>(_ data:[T: D], d:D? = nil) -> D? {
         if let s = self.current {
             return data[s]
@@ -674,7 +689,7 @@ open class ChameleonHelper<T> where T: Hashable {
      - returns: image
      */
     public final class func image(_ images:[T: UIImage]) -> UIImage? {
-        return self.currentThemeData(images)
+        return self.currentData(images)
     }
     
     /**
@@ -685,6 +700,6 @@ open class ChameleonHelper<T> where T: Hashable {
      - returns: color
      */
     public final class func color(_ colors:[T: UIColor]) -> UIColor? {
-        return self.currentThemeData(colors)
+        return self.currentData(colors)
     }
 }
