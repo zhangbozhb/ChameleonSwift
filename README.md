@@ -311,7 +311,7 @@ viewControllerInstance.ch.register() 这个方法在绝大多数的时候，你�
     * a, 手动扩展 UIView/UIViewController 支持 ChameleonCallBackProtocol
     * b, 重命名为 to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper 重命名为 ChameleonHelper
-    * a, 函数 currentTheme() 修改为 函数 current()
+    * a, 函数 currentTheme() 修改为 属性 current
 * 3, ch_* 相关函数属性,修改为 ch.*
 
 ### 原理
