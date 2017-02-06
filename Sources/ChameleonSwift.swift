@@ -347,7 +347,7 @@ protocol ChameleonAccess {
 }
 
 private var kChameleonKey: Void?
-extension UIView {
+public extension UIView {
     public var ch: ThemeSwitch<UIView> {
         get {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIView> {
@@ -360,7 +360,7 @@ extension UIView {
     }
 }
 
-extension UIViewController {
+public extension UIViewController {
     public var ch: ThemeSwitch<UIViewController> {
         get {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIViewController> {
@@ -461,7 +461,7 @@ public final class ChameleonApplication {
     }
 }
 
-extension UIApplication {
+public extension UIApplication {
     public final var ch:ChameleonApplication {
         return ChameleonApplication()
     }
