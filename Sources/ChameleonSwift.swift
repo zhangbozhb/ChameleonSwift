@@ -163,7 +163,10 @@ extension ThemeSwitchData {
     }
 }
 
-public protocol ChameleonCallBackProtocol:class {
+@available(*, deprecated, message: "ChameleonCallBackProtocol is deprecated.", renamed: "ChameleonUIProtocol")
+public typealias ChameleonCallBackProtocol = ChameleonUIProtocol
+
+public protocol ChameleonUIProtocol:class {
     /// switch theme
     ///
     /// - Parameters:
@@ -183,7 +186,7 @@ protocol ChameleonProtocol:class {
     var refreshBlock:SwitchThemeBlock? {get set}
     
     /// refresh call back protocal
-    var callback:ChameleonCallBackProtocol? {get}
+    var callback:ChameleonUIProtocol? {get}
     
     /// childrens of ChameleonProtocol
     var childrens: [ChameleonProtocol] {get}
@@ -287,8 +290,8 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
         }
     }
     
-    var callback:ChameleonCallBackProtocol? {
-        return owner as? ChameleonCallBackProtocol
+    var callback:ChameleonUIProtocol? {
+        return owner as? ChameleonUIProtocol
     }
     
     /// refresh self and children theme
@@ -429,13 +432,13 @@ private class ThemeService {
 }
 
 
-extension ThemeSwitch where DT: UIViewController {
+public extension ThemeSwitch where DT: UIViewController {
     /**
      force view controller enable switch theme/skin
      Note: you call method if parentViewController is nil, normally you ignore it
      */
     public final func register() {
-        if let vc = owner as? UIViewController {
+        if let vc = owner {
             ThemeService.shared.register(controller: vc)
         }
     }
@@ -471,8 +474,8 @@ public extension UIApplication {
 }
 
 // MARK: swizzle extension
-public extension NSObject {
-    public class func ch_swizzledMethod(_ originalSelector:Selector, swizzledSelector:Selector) {
+extension NSObject {
+    public class func ch_swizzledInstanceMethod(_ originalSelector:Selector, swizzledSelector:Selector) {
         let originalMethod = class_getInstanceMethod(self, originalSelector)
         let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
         
@@ -554,7 +557,7 @@ open class ThemeServiceConfig {
                 if let _ = swizzledRecords[t.rawValue] {
                 } else {
                     swizzledRecords[t.rawValue] = true
-                    UIView.ch_swizzledMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
+                    UIView.ch_swizzledInstanceMethod(#selector(UIView.awakeFromNib), swizzledSelector: #selector(UIView.ch_awakeFromNib))
                 }
             case ThemeAutoSwitchType.viewDidMoveToWindow:
                 autoViewDidMoveToWindow = typeEnabled
@@ -563,7 +566,7 @@ open class ThemeServiceConfig {
                 if let _ = swizzledRecords[t.rawValue] {
                 } else {
                     swizzledRecords[t.rawValue] = true
-                    UIView.ch_swizzledMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
+                    UIView.ch_swizzledInstanceMethod(#selector(UIView.didMoveToWindow), swizzledSelector: #selector(UIView.ch_didMoveToWindow))
                 }
             case ThemeAutoSwitchType.viewControllerAwakeFromNib:
                 autoViewControllerAwakeFromNib = typeEnabled
@@ -572,7 +575,7 @@ open class ThemeServiceConfig {
                 if let _ = swizzledRecords[t.rawValue] {
                 } else {
                     swizzledRecords[t.rawValue] = true
-                    UIViewController.ch_swizzledMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
+                    UIViewController.ch_swizzledInstanceMethod(#selector(UIViewController.awakeFromNib), swizzledSelector: #selector(UIViewController.ch_awakeFromNib))
                 }
             case ThemeAutoSwitchType.viewControllerViewWillAppear:
                 autoViewControllerViewWillAppear = typeEnabled
@@ -581,7 +584,7 @@ open class ThemeServiceConfig {
                 if let _ = swizzledRecords[t.rawValue] {
                 } else {
                     swizzledRecords[t.rawValue] = true
-                    UIViewController.ch_swizzledMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
+                    UIViewController.ch_swizzledInstanceMethod(#selector(UIViewController.viewWillAppear(_:)), swizzledSelector: #selector(UIViewController.ch_viewWillAppear(_:)))
                 }
             default:
                 break

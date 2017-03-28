@@ -63,7 +63,7 @@ class ThirdViewController:UIViewController {
     }
     
    override func switchTheme(now: Any, pre: Any?) {
-        print("ThirdViewController switchTheme \(NSStringFromClass(type(of: self)))")
+        print("ThirdViewController switchTheme \(String.init(reflecting: self))")
     }
 }
 
@@ -74,20 +74,20 @@ class ForthViewController:ThirdViewController {
         view.backgroundColor = UIColor.purple
     }
    override func switchTheme(now: Any, pre: Any?) {
-        print("ForthViewController switchTheme \(NSStringFromClass(type(of: self)))")
+        print("ForthViewController switchTheme \(String.init(reflecting: self))")
     }
 }
 
 class View1:UIView {
    override func switchTheme(now: Any, pre: Any?) {
-        print("View1 switchTheme \(NSStringFromClass(type(of: self))) data:\(ChameleonHelper<ColorName>.parse(now))")
+        print("View1 switchTheme \(String.init(reflecting: self)) data:\(String(describing: ChameleonHelper<ColorName>.parse(now)))")
     }
 }
 
 
 class View2:View1 {
    override func switchTheme(now: Any, pre: Any?) {
-        print("View2 switchTheme \(NSStringFromClass(type(of: self))) data:\(ChameleonHelper<ColorName>.parse(now))")
+        print("View2 switchTheme \(String.init(reflecting: self)) data:\(String(describing: ChameleonHelper<ColorName>.parse(now)))")
     }
 }
 
