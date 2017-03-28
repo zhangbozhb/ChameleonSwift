@@ -37,7 +37,7 @@ label.ch.refreshBlock = { (now:Any, pre:Any?) -> Void in
 }
 ```
 
-Or your can override method of view: switchTheme(now:pre:), your should extension UIView/UIViewController to support ChameleonCallBackProtocol
+Or your can override method of view: switchTheme(now:pre:), your should extension UIView/UIViewController to support ChameleonUIProtocol
 ```swift
 override func switchTheme(now: Any, pre: Any?) {
     // your code change theme/skin
@@ -46,14 +46,14 @@ override func switchTheme(now: Any, pre: Any?) {
     }
 }
 
-// MARK: make UIView/UIViewController to support ChameleonCallBackProtocol
+// MARK: make UIView/UIViewController to support ChameleonUIProtocol
 // This piece of code must be in your app/module: due to swift 3 restrict to extentsion of exist class(override is not available)
-extension UIView : ChameleonCallBackProtocol {
+extension UIView : ChameleonUIProtocol {
     public func switchTheme(now: Any, pre: Any?){
     }
 }
 
-extension UIViewController : ChameleonCallBackProtocol {
+extension UIViewController : ChameleonUIProtocol {
     public func switchTheme(now: Any, pre: Any?){
     }
 }
@@ -96,7 +96,7 @@ Some useful function define in ChameleonHelper.
 
 * 1, Auto callback config
     To save your time, ThemeServiceConfig may be your favor.
-    Several properties are pre defined for you. When specified property is true, ch.refreshBlock or switchTheme(now:pre:) of ChameleonCallBackProtocol user it's parent data
+    Several properties are pre defined for you. When specified property is true, ch.refreshBlock or switchTheme(now:pre:) of ChameleonUIProtocol user it's parent data
 
     ```swift
         // config your theme switch
@@ -105,13 +105,13 @@ Some useful function define in ChameleonHelper.
     
     **Note**: Auto call is convenient and save your time, but you should follow some rules, or else you may be in trouble.
     
-    * No Crash: Be aware you should promise you ChameleonCallBackProtocol and ch.refreshBlock If unfortunately it happened, you app will crash.
+    * No Crash: Be aware you should promise you ChameleonUIProtocol and ch.refreshBlock If unfortunately it happened, you app will crash.
     * Save your status: You should save you status aware in some place, and theme switch method should status aware. since callback is automatic, if you theme or you appearance is status related, it may work not properly. For example, you has a button which theme is status related. Its background is black in Day, white in Night, and red if it selected; if you have never save your selection status or theme switch ignored selection status, auto callback will not work properly.
 
 
 * 2, Call orders:
     * order between parent and child(view/subviews, view controller/ child view controller): child will call before parent;
-    * ChameleonCallBackProtocol and ch.refreshBlock: if both defined, ChameleonCallBackProtocol run before ch.refreshBlock;
+    * ChameleonUIProtocol and ch.refreshBlock: if both defined, ChameleonUIProtocol run before ch.refreshBlock;
     * view, view controller: if your app switch theme, view theme switch related method run before view controller. If you change one view theme in both view and view controller, changes in view controller will take effect.
     
     **Note**:
@@ -132,7 +132,7 @@ Some useful function define in ChameleonHelper.
    version 2.2 is break change. server changes should apply:
 
 * 1, func ch_switchTheme(_ now: Any, pre: Any?) no longer available
-    * a, your should extension UIView/UIViewController support ChameleonCallBackProtocol
+    * a, your should extension UIView/UIViewController support ChameleonUIProtocol
     * b, rename to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper to ChameleonHelper
     * a, func currentTheme() to property current
@@ -205,7 +205,7 @@ label.ch.refreshBlock = { (now:Any, pre:Any?) -> Void in
 }
 ```
 * 注意: now 通过 ChameleonHelper<你定义的主题类型>.current 获取当前的主题（后面步骤二传入的参数）
-override ChameleonCallBackProtocol.switchTheme方法实现：
+override ChameleonUIProtocol.switchTheme方法实现：
 ```swift
 override func switchTheme(now: Any, pre: Any?) {
     // your code change theme/skin
@@ -214,14 +214,14 @@ override func switchTheme(now: Any, pre: Any?) {
     }
 }
 
-// MARK: 在你的代码中使得 UIView/UIViewController 实现 ChameleonCallBackProtocol
+// MARK: 在你的代码中使得 UIView/UIViewController 实现 ChameleonUIProtocol
 // 只需要在你的代码中添加一次即: 原因 swift 3禁止override 外部lib extension的方法
-extension UIView : ChameleonCallBackProtocol {
+extension UIView : ChameleonUIProtocol {
     public func switchTheme(now: Any, pre: Any?){
     }
 }
 
-extension UIViewController : ChameleonCallBackProtocol {
+extension UIViewController : ChameleonUIProtocol {
     public func switchTheme(now: Any, pre: Any?){
     }
 }
@@ -286,13 +286,13 @@ ChameleonHelper定义了一些有用的函数
 
 #### 注意
 不过任何好用，其实都是由代价的，自动调用使得主题切换调用更隐晦，响应的也不容易调试。为了你更好的使用自动调用，几点注意事项
-* 确保不抛出异常： ch.refreshBlock 或者 ChameleonCallBackProtocol， 不要抛出异常，否则会 crash
+* 确保不抛出异常： ch.refreshBlock 或者 ChameleonUIProtocol， 不要抛出异常，否则会 crash
 * 非主题相关的状态保存在 view 或者 view controller中： 比如 一个 view 具有选中属性，在选中不选中的时候由不同的外观，你需要在某个地方存放这个状态，否则外观会被主题切换破坏调用。比如你 主题切换会把背景色设置为白色或黑色，你的 App 在某个地方人为的设置为红色，而你有恰好的配置了自动调用，那么你可能会惊讶的发现 view 颜色不是你想要的红色，你需要考虑到这一点。比较方便的方式是，你用某种方式记录你设置的红色状态，在 主题切换的时候，发现为红色是不修改背景色。
 
 
 ### 常见问题：
-* 1，闭包 ch.refreshBlock 和 ChameleonCallBackProtocol 同时存在，会出现什么问题？
-闭包和ChameleonCallBackProtocol都会被调用，只不过闭包会在ChameleonCallBackProtocol调用的后面调用
+* 1，闭包 ch.refreshBlock 和 ChameleonUIProtocol 同时存在，会出现什么问题？
+闭包和 ChameleonUIProtocol 都会被调用，只不过闭包会在 ChameleonUIProtocol 调用的后面调用
 
 * 2，view controller 主题切换闭包,函数没有调用.
 如果一个修改主题的方法写在一个view controller中，而在使用的时候 只是将 controller的view添加到某个view上，而view controller本身没有加到任何 view controller下的时候， 可能出现 该 view contoller的方法，并没有自动调用或者在主题切换的时候也没有自动调用？怎么处理
@@ -308,7 +308,7 @@ viewControllerInstance.ch.register() 这个方法在绝大多数的时候，你�
    版本 2.2 和以前的api是不兼容的, 重要的修改如下:
 
 * 1, 移除函数 ch_switchTheme(_ now: Any, pre: Any?)
-    * a, 手动扩展 UIView/UIViewController 支持 ChameleonCallBackProtocol
+    * a, 手动扩展 UIView/UIViewController 支持 ChameleonUIProtocol
     * b, 重命名为 to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper 重命名为 ChameleonHelper
     * a, 函数 currentTheme() 修改为 属性 current
