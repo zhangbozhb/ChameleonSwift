@@ -706,3 +706,17 @@ open class ChameleonHelper<T> where T: Hashable {
         return self.currentData(colors)
     }
 }
+
+
+
+// MARK: - extention view default, you can override it
+extension UIView : ChameleonUIProtocol {
+    open func switchTheme(now: Any, pre: Any?){
+    }
+}
+
+// MARK: - extention view default, you can override it
+extension UIViewController : ChameleonUIProtocol {
+    open func switchTheme(now: Any, pre: Any?){
+    }
+}

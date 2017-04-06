@@ -46,17 +46,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 }
-
-
-
-extension UIView : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-        
-    }
-}
-
-extension UIViewController : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-        
-    }
-}

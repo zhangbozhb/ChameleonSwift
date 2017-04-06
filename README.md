@@ -37,7 +37,7 @@ label.ch.refreshBlock = { (now:Any, pre:Any?) -> Void in
 }
 ```
 
-Or your can override method of view: switchTheme(now:pre:), your should extension UIView/UIViewController to support ChameleonUIProtocol
+Or your can override method of view: switchTheme(now:pre:)
 ```swift
 override func switchTheme(now: Any, pre: Any?) {
     // your code change theme/skin
@@ -46,17 +46,6 @@ override func switchTheme(now: Any, pre: Any?) {
     }
 }
 
-// MARK: make UIView/UIViewController to support ChameleonUIProtocol
-// This piece of code must be in your app/module: due to swift 3 restrict to extentsion of exist class(override is not available)
-extension UIView : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-    }
-}
-
-extension UIViewController : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-    }
-}
 ```
 * now: data that you pass to switchTheme. your can use ChameleonHelper<ThemeStyle>.parse(now) get your real theme data
 * pre: previous data that you pass to switchTheme
@@ -96,7 +85,7 @@ Some useful function define in ChameleonHelper.
 
 * 1, Auto callback config
     To save your time, ThemeServiceConfig may be your favor.
-    Several properties are pre defined for you. When specified property is true, ch.refreshBlock or switchTheme(now:pre:) of ChameleonUIProtocol user it's parent data
+    Several properties are pre defined for you. When given property is true, ch.refreshBlock or switchTheme(now:pre:) of ChameleonUIProtocol user it's parent data
 
     ```swift
         // config your theme switch
@@ -105,8 +94,8 @@ Some useful function define in ChameleonHelper.
     
     **Note**: Auto call is convenient and save your time, but you should follow some rules, or else you may be in trouble.
     
-    * No Crash: Be aware you should promise you ChameleonUIProtocol and ch.refreshBlock If unfortunately it happened, you app will crash.
-    * Save your status: You should save you status aware in some place, and theme switch method should status aware. since callback is automatic, if you theme or you appearance is status related, it may work not properly. For example, you has a button which theme is status related. Its background is black in Day, white in Night, and red if it selected; if you have never save your selection status or theme switch ignored selection status, auto callback will not work properly.
+    * No Crash: Be awared in mind, you should promise your ChameleonUIProtocol and ch.refreshBlock run without crash. If it happened unfortunately, your app will crash.
+    * Save your status: You should save your status in some place, and theme switch method should status awared. since callback is automatic, if you theme or you appearance is status related, it may work not properly. For example, you has a button which theme is status related. Its background is black in Day, white in Night, and red if it selected; if you have never save your selection status or theme switch ignored selection status, auto callback will not work properly.
 
 
 * 2, Call orders:
@@ -132,8 +121,7 @@ Some useful function define in ChameleonHelper.
    version 2.2 is break change. server changes should apply:
 
 * 1, func ch_switchTheme(_ now: Any, pre: Any?) no longer available
-    * a, your should extension UIView/UIViewController support ChameleonUIProtocol
-    * b, rename to switchTheme(now: Any, pre: Any?)
+    * a, rename to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper to ChameleonHelper
     * a, func currentTheme() to property current
 * 3, ch_* function/property not available and use ch.* instead
@@ -214,17 +202,6 @@ override func switchTheme(now: Any, pre: Any?) {
     }
 }
 
-// MARK: 在你的代码中使得 UIView/UIViewController 实现 ChameleonUIProtocol
-// 只需要在你的代码中添加一次即: 原因 swift 3禁止override 外部lib extension的方法
-extension UIView : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-    }
-}
-
-extension UIViewController : ChameleonUIProtocol {
-    public func switchTheme(now: Any, pre: Any?){
-    }
-}
 参数说明：
 * now: 你切换主题是传递进来的参数，比如是白天，还是黑夜等待。你可以用 ChameleonHelper<你定义的主题类型>.parse(now),获取当前的主题
 * pre: 上次你主题切换使用的参数
@@ -308,8 +285,7 @@ viewControllerInstance.ch.register() 这个方法在绝大多数的时候，你�
    版本 2.2 和以前的api是不兼容的, 重要的修改如下:
 
 * 1, 移除函数 ch_switchTheme(_ now: Any, pre: Any?)
-    * a, 手动扩展 UIView/UIViewController 支持 ChameleonUIProtocol
-    * b, 重命名为 to switchTheme(now: Any, pre: Any?)
+    * a, 重命名为 to switchTheme(now: Any, pre: Any?)
 * 2, ThemeSwitchHelper 重命名为 ChameleonHelper
     * a, 函数 currentTheme() 修改为 属性 current
 * 3, ch_* 相关函数属性,修改为 ch.*
