@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ChameleonSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

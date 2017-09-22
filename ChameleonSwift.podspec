@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ChameleonSwift"
-  s.version      = "2.3.2"
+  s.version      = "3.0"
   s.summary      = "A lightweight and pure Swift implemented library for change app theme/skin"
 
   s.description  = <<-DESC
@@ -27,8 +27,5 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/zhangbozhb/ChameleonSwift.git", :tag => s.version }
 
-  s.source_files  = ["Sources/*.swift", "Sources/*.{h,m}"]
-  s.exclude_files = "Sources/Exclude"
-
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
+  s.source_files  = ["ChameleonSwift/Classes/*.swift"]
 end

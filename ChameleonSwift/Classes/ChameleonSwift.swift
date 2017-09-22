@@ -7,22 +7,22 @@
 //  The MIT License (MIT)
 //  Copyright © 2016年 travel.
 //
-//	Permission is hereby granted, free of charge, to any person obtaining a copy of
-//	this software and associated documentation files (the "Software"), to deal in
-//	the Software without restriction, including without limitation the rights to
-//	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-//	the Software, and to permit persons to whom the Software is furnished to do so,
-//	subject to the following conditions:
+//    Permission is hereby granted, free of charge, to any person obtaining a copy of
+//    this software and associated documentation files (the "Software"), to deal in
+//    the Software without restriction, including without limitation the rights to
+//    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//    the Software, and to permit persons to whom the Software is furnished to do so,
+//    subject to the following conditions:
 //
-//	The above copyright notice and this permission notice shall be included in all
-//	copies or substantial portions of the Software.
+//    The above copyright notice and this permission notice shall be included in all
+//    copies or substantial portions of the Software.
 //
-//	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-//	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-//	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-//	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-//	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import Foundation
 import UIKit
@@ -303,7 +303,7 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
         conf.dataSelf = true
         workerWrapper(data: ThemeSwitchData.init(data: data))
     }
-
+    
     /// refresh self and children theme
     ///
     /// - Parameter refresh: true force refresh, false will use current theme
@@ -479,12 +479,12 @@ extension NSObject {
         let originalMethod = class_getInstanceMethod(self, originalSelector)
         let swizzledMethod = class_getInstanceMethod(self, swizzledSelector)
         
-        let didAddMethod = class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod))
+        let didAddMethod = class_addMethod(self, originalSelector, method_getImplementation(swizzledMethod!), method_getTypeEncoding(swizzledMethod!))
         
         if didAddMethod {
-            class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod))
+            class_replaceMethod(self, swizzledSelector, method_getImplementation(originalMethod!), method_getTypeEncoding(originalMethod!))
         } else {
-            method_exchangeImplementations(originalMethod, swizzledMethod)
+            method_exchangeImplementations(originalMethod!, swizzledMethod!)
         }
     }
 }
@@ -523,7 +523,7 @@ open class ThemeServiceConfig {
     public func isAuto(type:ThemeAutoSwitchType) -> Bool {
         return autoSwitch.contains(type)
     }
-
+    
     open static let shared = ThemeServiceConfig()
     
     /**
@@ -553,7 +553,7 @@ open class ThemeServiceConfig {
             switch t {
             case ThemeAutoSwitchType.viewAwakeFromNib:
                 autoViewAwakeFromNib = typeEnabled
-    
+                
                 if let _ = swizzledRecords[t.rawValue] {
                 } else {
                     swizzledRecords[t.rawValue] = true
@@ -593,7 +593,7 @@ open class ThemeServiceConfig {
     }
 }
 
-public extension UIView {
+@objc public extension UIView {
     func ch_awakeFromNib() {
         ch_awakeFromNib()
         if ThemeServiceConfig.shared.autoViewAwakeFromNib {
@@ -609,7 +609,7 @@ public extension UIView {
     }
 }
 
-public extension UIViewController {
+@objc public extension UIViewController {
     func ch_awakeFromNib() {
         ch_awakeFromNib()
         if ThemeServiceConfig.shared.autoViewControllerAwakeFromNib {
@@ -710,13 +710,13 @@ open class ChameleonHelper<T> where T: Hashable {
 
 
 // MARK: - extention view default, you can override it
-extension UIView : ChameleonUIProtocol {
+@objc extension UIView : ChameleonUIProtocol {
     open func switchTheme(now: Any, pre: Any?){
     }
 }
 
 // MARK: - extention view default, you can override it
-extension UIViewController : ChameleonUIProtocol {
+@objc extension UIViewController : ChameleonUIProtocol {
     open func switchTheme(now: Any, pre: Any?){
     }
 }

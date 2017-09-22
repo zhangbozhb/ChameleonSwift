@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import ChameleonSwift
 
 class CustomerView1:UILabel {
     required init?(coder aDecoder: NSCoder) {

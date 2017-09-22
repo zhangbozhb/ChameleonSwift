@@ -45,7 +45,7 @@ public extension UIColor {
     public class func colorWithHexString(_ hexString: String, alpha: Float = 1.0) -> UIColor {
         var hexStr = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
         if (hexStr.hasPrefix("#")) {
-            hexStr = hexStr.substring(from: hexStr.index(after: hexStr.startIndex))
+            hexStr = String.init(hexStr.suffix(from: hexStr.index(after: hexStr.startIndex)))
         }
         var hex:CUnsignedInt = 0
         Scanner.init(string: hexStr).scanHexInt32(&hex)

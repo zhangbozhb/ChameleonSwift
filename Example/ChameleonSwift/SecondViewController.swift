@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ChameleonSwift
 
 class SecondViewController: UIViewController {
     @IBOutlet weak var testViewContainer: UIView!
