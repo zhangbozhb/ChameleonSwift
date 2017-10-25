@@ -234,7 +234,7 @@ view controller 调用:
 ```
 
 ### Swift 版本问题
-默认支持的为Swift 3版本,如果需要在 Swift 2 版本使用, 请使用 1.x的版本
+默认支持的为Swift 4版本,如果需要在 Swift 2 版本使用, 请使用 2.x的版本
 
 ## 有用的帮助函数
 ChameleonHelper定义了一些有用的函数
