@@ -33,8 +33,8 @@ import UIKit
 
 /// theme data wrapper :unify process and avoid theme data type difference
 final public class ThemeDataWraper<T> {
-    public var value :T?
-    init(value:T?) {
+    public var value :T
+    init(value:T) {
         self.value = value
     }
 }
@@ -59,13 +59,9 @@ fileprivate class WeakRef<T: AnyObject> {
 
 /// real data used in theme switch process
 class ThemeSwitchData {
-    let extData:Any!    // ThemeDataWraper<T>
-    
-    fileprivate init(){
-        extData = nil
-    }
-    
-    init<T>(data:T?) {
+    let extData:Any    // ThemeDataWraper<T>
+
+    init<T>(data:T) {
         extData = ThemeDataWraper.init(value: data)
     }
 }
@@ -88,16 +84,16 @@ public struct ThemeSwitchOptions: OptionSet {
 
 /// used to store theme switch data
 fileprivate class ThemeSwitchDataCenter {
-    fileprivate var switchData:ThemeSwitchData!
+    fileprivate var switchData:ThemeSwitchData
     
-    fileprivate init<T>(data:T?) {
+    fileprivate init<T>(data:T) {
         switchData = ThemeSwitchData.init(data: data)
     }
     
-    fileprivate static let shared = ThemeSwitchDataCenter.init(data: ThemeStyle.day)
+    fileprivate static let shared = ThemeSwitchDataCenter.init(data: Optional<Int>.none)
     
     
-    class func initThemeData<T>(_ obj: T?) {
+    class func initThemeData<T>(_ obj: T) {
         shared.switchData = ThemeSwitchData.init(data: obj)
     }
     
@@ -120,13 +116,6 @@ fileprivate class ThemeSwitchDataCenter {
  - returns: true switch theme will happen, or false ignore switch theme
  */
 public typealias SwitchThemeBlock = ((_ now: Any, _ pre: Any?) -> Void)
-
-open class CHObjectWrapper<T> {
-    var value :T?
-    init(value:T?) {
-        self.value = value
-    }
-}
 
 
 // MARK: - extension ThemeSwitchData for convieniece usage
@@ -166,7 +155,7 @@ protocol ChameleonProtocol:class {
     var refreshBlock:SwitchThemeBlock? {get set}
     
     /// refresh call back protocal
-    var callback:ChameleonUIProtocol? {get}
+    var callback:ChameleonUIProtocol {get}
     
     /// childrens of ChameleonProtocol
     var childrens: [ChameleonProtocol] {get}
@@ -194,38 +183,31 @@ extension ChameleonProtocol {
         // save switch data
         self.data = data
         
-        // before process
-        before()
-        
-        if option.contains(.self) {
-            // call switch theme callback
-            callback?.switchTheme(now: data.extData, pre: preData?.extData)
-            
-            // call switch theme method on children
-            if option.contains(.children) {
-                for child in childrens {
-                    child.workerWrapper(data: data, option: option)
-                }
-            }
-            
-            // call switch theme block
-            refreshBlock?(data.extData, preData?.extData)
-        } else {
-            // call switch theme method on children
-            if option.contains(.children) {
-                for child in childrens {
-                    child.workerWrapper(data: data, option: option)
-                }
+        // call switch theme method on children
+        if option.contains(.children) {
+            for child in childrens {
+                child.workerWrapper(data: data, option: option)
             }
         }
+        
+        guard option.contains(.self) else {
+            return
+        }
+        
+        // before process
+        before()
+        // call switch theme callback
+        callback.switchTheme(now: data.extData, pre: preData?.extData)
+        // call switch theme block
+        refreshBlock?(data.extData, preData?.extData)
         // after process
         after()
     }
 }
 
-open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
+open class ThemeSwitch<DT: ChameleonUIProtocol>: ChameleonProtocol {
     /// owner
-    weak var owner:DT?
+    unowned var owner:DT
     
     
     /// internal data used theme switch
@@ -233,13 +215,8 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
     
     /// switch block
     public var refreshBlock:SwitchThemeBlock?
-    
+    /// childrens of ChameleonProtocol
     var childrens: [ChameleonProtocol] {
-        if let v = owner as? UIView {
-            return v.subviews.flatMap({ $0.ch })
-        } else if let v = owner as? UIViewController {
-            return v.childViewControllers.flatMap({ $0.ch })
-        }
         return []
     }
     
@@ -253,13 +230,10 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
     }
     /// call after switch theme
     func after() {
-        if let v = owner as? UIViewController {
-            v.setNeedsStatusBarAppearanceUpdate()
-        }
     }
     
-    var callback:ChameleonUIProtocol? {
-        return owner as? ChameleonUIProtocol
+    var callback:ChameleonUIProtocol {
+        return owner
     }
     
     /// refresh self and children theme
@@ -286,6 +260,22 @@ open class ThemeSwitch<DT:AnyObject>: ChameleonProtocol {
     }
 }
 
+class ThemeSwitchView: ThemeSwitch<UIView> {
+    override var childrens: [ChameleonProtocol] {
+        return owner.subviews.compactMap({ $0.ch })
+    }
+}
+
+class ThemeSwitchViewController: ThemeSwitch<UIViewController> {
+    override var childrens: [ChameleonProtocol] {
+        return owner.childViewControllers.compactMap({ $0.ch })
+    }
+    
+    override func after() {
+        owner.setNeedsStatusBarAppearanceUpdate()
+    }
+}
+
 protocol ChameleonAccess {
     associatedtype ChameleonAccessDataType
     var ch: ChameleonAccessDataType { get }
@@ -298,7 +288,7 @@ public extension UIView {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIView> {
                 return pre
             }
-            let now = ThemeSwitch.init(owner: self)
+            let now = ThemeSwitchView.init(owner: self)
             objc_setAssociatedObject(self, &kChameleonKey, now, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return now
         }
@@ -311,7 +301,7 @@ public extension UIViewController {
             if let pre = objc_getAssociatedObject(self, &kChameleonKey) as? ThemeSwitch<UIViewController> {
                 return pre
             }
-            let now = ThemeSwitch.init(owner: self)
+            let now = ThemeSwitchViewController.init(owner: self)
             objc_setAssociatedObject(self, &kChameleonKey, now, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             return now
         }
@@ -325,7 +315,7 @@ private class ThemeService {
     
     static let shared = ThemeService()
     
-    func refresh<T>(with data: T?) {
+    func refresh<T>(with data: T) {
         let switchData = ThemeSwitchData.init(data: data)
         ThemeSwitchDataCenter.shared.switchData = switchData
         let option:ThemeSwitchOptions = [.self, .children, .forceRefresh]
@@ -344,10 +334,7 @@ private class ThemeService {
                 viewController.ch.workerWrapper(data: switchData, option: option)
             }
         }
-        var userInfo:[String: ThemeDataWraper<T>] = [:]
-        if let data = data {
-            userInfo[kChThemeSwitchNotification] = ThemeDataWraper.init(value: data)
-        }
+        let userInfo:[String: ThemeDataWraper<T>] = [ kChThemeSwitchNotification :  ThemeDataWraper.init(value: data)]
         NotificationCenter.default.post(name: Notification.Name(rawValue: kChThemeSwitchNotification),
                                         object: nil,
                                         userInfo: userInfo)
@@ -375,9 +362,7 @@ public extension ThemeSwitch where DT: UIViewController {
      Note: you call method if parentViewController is nil, normally you ignore it
      */
     public final func register() {
-        if let vc = owner {
-            ThemeService.shared.register(controller: vc)
-        }
+        ThemeService.shared.register(controller: owner)
     }
 }
 
@@ -653,3 +638,4 @@ open class ChameleonHelper<T> where T: Hashable {
     open func switchTheme(now: Any, pre: Any?){
     }
 }
+
