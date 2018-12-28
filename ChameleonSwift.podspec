@@ -5,7 +5,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ChameleonSwift"
-  s.version      = "3.1"
+  s.version      = "3.2"
   s.summary      = "A lightweight and pure Swift implemented library for change app theme/skin"
 
   s.description  = <<-DESC
@@ -28,5 +28,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/zhangbozhb/ChameleonSwift.git", :tag => s.version }
 
   s.source_files  = ["ChameleonSwift/Classes/*.swift"]
-  s.swift_version = '4.1'
+  s.swift_version = '4.2'
 end

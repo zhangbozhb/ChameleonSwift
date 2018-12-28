@@ -1,0 +1,6 @@
+framework module ChameleonSwift {
+  umbrella header "ChameleonSwift-umbrella.h"
+
+  export *
+  module * { export * }
+}

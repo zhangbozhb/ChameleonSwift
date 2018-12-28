@@ -268,7 +268,7 @@ class ThemeSwitchView: ThemeSwitch<UIView> {
 
 class ThemeSwitchViewController: ThemeSwitch<UIViewController> {
     override var childrens: [ChameleonProtocol] {
-        return owner.childViewControllers.compactMap({ $0.ch })
+        return owner.children.compactMap({ $0.ch })
     }
     
     override func after() {
@@ -442,7 +442,7 @@ open class ThemeServiceConfig {
         return autoSwitch.contains(type)
     }
     
-    open static let shared = ThemeServiceConfig()
+    public static let shared = ThemeServiceConfig()
     
     /**
      init theme data
