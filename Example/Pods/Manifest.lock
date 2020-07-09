@@ -1,5 +1,5 @@
 PODS:
-  - ChameleonSwift (3.1)
+  - ChameleonSwift (3.2)
 
 DEPENDENCIES:
   - ChameleonSwift (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  ChameleonSwift: 5c3249400dcd580608c300cb4bb7c2548ca489de
+  ChameleonSwift: 05d4a3a6be92b2a061e483a023f4c223c0b0944e
 
-PODFILE CHECKSUM: 9792bc0b602954093da46f508fc257b3a93403f2
+PODFILE CHECKSUM: ff89648f9e638054dfb630ed859a14d30886abb1
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.3
